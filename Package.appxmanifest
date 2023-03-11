@@ -12,9 +12,9 @@
     Version="1.0.0.0" />
 
   <Properties>
-    <DisplayName>Default</DisplayName>
-    <PublisherDisplayName>Default</PublisherDisplayName>
-    <Logo>Assets\StoreLogo.png</Logo>
+    <DisplayName>Wingman</DisplayName>
+    <PublisherDisplayName>Danny Rodriguez</PublisherDisplayName>
+    <Logo>Assets\wingman.png</Logo>
   </Properties>
 
   <Dependencies>
@@ -33,9 +33,9 @@
       Executable="$targetnametoken$.exe"
       EntryPoint="$targetentrypoint$">
       <uap:VisualElements
-        DisplayName="Default"
+        DisplayName="Wingman"
         Description="None"
-        BackgroundColor="transparent"
+        BackgroundColor="white"
         Square150x150Logo="Assets\Square150x150Logo.png"
         Square44x44Logo="Assets\Square44x44Logo.png">
         <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png" />

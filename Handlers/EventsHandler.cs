@@ -7,6 +7,7 @@ using Windows.Media.Playback;
 using wingman.Helpers;
 using wingman.Interfaces;
 using wingman.Natives;
+using wingman.Natives.Helpers;
 using wingman.Views;
 
 namespace wingman.Handlers
@@ -123,14 +124,12 @@ namespace wingman.Handlers
 
             MouseWait();
             var prompt = await chatGPTService.GetWhisperResponse(file);
-            bool cb;
             // check settings for Append_Clipboard and if its true, append the clipboard to the prompt
-            if (cb = settingsService.Load<bool>("Wingman", "Append_Clipboard"))
+            if (settingsService.Load<bool>("Wingman", "Append_Clipboard"))
             {
-                var clipboard = Clipboard.GetContent();
-                if (clipboard.Contains(StandardDataFormats.Text))
+                var text = await ClipboardHelper.GetTextAsync();
+                if (!string.IsNullOrEmpty(text))
                 {
-                    var text = await clipboard.GetTextAsync();
                     text = PromptCleaners.TrimWhitespaces(text);
                     text = PromptCleaners.TrimNewlines(text);
                     prompt += text;
@@ -203,10 +202,9 @@ namespace wingman.Handlers
             // check settings for Append_Clipboard_Modal and if its true, append the clipboard to the prompt
             if (settingsService.Load<bool>("Wingman", "Append_Clipboard_Modal"))
             {
-                var clipboard = Clipboard.GetContent();
-                if (clipboard.Contains(StandardDataFormats.Text))
+                var text = await ClipboardHelper.GetTextAsync();
+                if (!string.IsNullOrEmpty(text))
                 {
-                    var text = await clipboard.GetTextAsync();
                     text = PromptCleaners.TrimWhitespaces(text);
                     text = PromptCleaners.TrimNewlines(text);
                     prompt += text;
