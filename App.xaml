@@ -1,0 +1,23 @@
+<Application
+    x:Class="wingman.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:wingman">
+
+    <Application.Resources>
+        <ResourceDictionary>
+            <GradientStopCollection x:Key="ProgressRingGradientStops">
+                <GradientStop Offset="0" Color="Green" />
+                <GradientStop Offset="0.5" Color="Yellow" />
+                <GradientStop Offset="1" Color="Red" />
+            </GradientStopCollection>
+            <ResourceDictionary.MergedDictionaries>
+                <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
+                <ResourceDictionary Source="/Views/Styles.xaml" />
+                <!--  Other merged dictionaries here  -->
+            </ResourceDictionary.MergedDictionaries>
+            <!--  Other app resources here  -->
+        </ResourceDictionary>
+    </Application.Resources>
+
+</Application>

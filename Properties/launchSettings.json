@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "wingman (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "wingman (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

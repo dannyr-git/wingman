@@ -1,0 +1,29 @@
+<Window
+    x:Class="wingman.Views.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:views="using:wingman.Views"
+    mc:Ignorable="d">
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" RowDefinitions="42,*">
+        <!--  App Title Bar  -->
+        <views:AppTitleBar
+            x:Name="AppTitleBar"
+            x:Uid="AppTitleBar"
+            Grid.Row="0"
+            VerticalAlignment="Center"
+            Icon="../Assets/wingman.png"
+            IconHeight="30"
+            IconMargin="2,0,10,7"
+            IconWidth="40"
+            TextFontSize="15"
+            TextMargin="10,0,0,0"
+            TextWrapping="NoWrap" />
+
+        <views:MainPage Grid.Row="1" />
+
+    </Grid>
+
+</Window>

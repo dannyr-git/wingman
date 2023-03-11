@@ -1,0 +1,160 @@
+<UserControl
+    x:Class="wingman.Views.OpenAIControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:wingman.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="50" />
+            <ColumnDefinition Width="*" MinWidth="350" />
+            <ColumnDefinition Width="150" />
+            <ColumnDefinition Width="150" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Button
+            Grid.Row="0"
+            Grid.Column="0"
+            Margin="8,0,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Center"
+            Command="{Binding ApplyKeyAndRestartCommand}"
+            Content="&#xF83E;"
+            FontFamily="Segoe MDL2 Assets"
+            IsEnabled="{Binding IsEnabled, Mode=OneWay}"
+            ToolTipService.ToolTip="This will re-start the application to apply the API key" />
+
+        <TextBox
+            Grid.Row="0"
+            Grid.Column="1"
+            Grid.ColumnSpan="2"
+            Width="420"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Center"
+            CharacterSpacing="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
+            MaxLength="51"
+            Text="{Binding API_KEY, Mode=TwoWay}"
+            TextWrapping="NoWrap" />
+
+        <TextBlock
+            Grid.Column="2"
+            Grid.ColumnSpan="2"
+            Margin="60,0,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Center"
+            Text="Enter API Key, Click Refresh"
+            TextWrapping="Wrap" />
+
+        <Grid Grid.Row="2" Margin="10" />
+
+        <StackPanel
+            Grid.Row="3"
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Center"
+            Orientation="Horizontal">
+
+            <TextBlock
+                Margin="25,0,5,0"
+                VerticalAlignment="Center"
+                Text="Main Hotkey :" />
+
+            <ToggleButton
+                x:Name="ConfigMainHotkeyButton"
+                MinWidth="50"
+                Margin="0,0,0,0"
+                VerticalAlignment="Center"
+                Click="{x:Bind ViewModel.ConfigureHotkeyCommand}"
+                Content="{Binding Main_Hotkey}"
+                IsChecked="{x:Bind ViewModel.Main_Hotkey_Toggled, Mode=OneWay}"
+                ToolTipService.ToolTip="Click the button then hit the hotkey you want to set" />
+
+            <TextBlock
+                Margin="10,0,5,0"
+                VerticalAlignment="Center"
+                Text="Modal Hotkey :" />
+
+            <ToggleButton
+                x:Name="ConfigModalHotkeyButton"
+                MinWidth="50"
+                Margin="0,0,0,0"
+                VerticalAlignment="Center"
+                Click="{x:Bind ViewModel.ConfigureHotkeyCommand}"
+                Content="{Binding Modal_Hotkey}"
+                IsChecked="{x:Bind ViewModel.Main_Hotkey_Toggled, Mode=OneWay}"
+                ToolTipService.ToolTip="Click the button then hit the hotkey you want to set" />
+
+        </StackPanel>
+
+
+        <StackPanel
+            Grid.Row="3"
+            Grid.Column="2"
+            Grid.ColumnSpan="2"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Center"
+            Orientation="Horizontal"
+            Spacing="10">
+
+
+            <CheckBox
+                x:Name="trimWhitespaceCheckbox"
+                Margin="0,0,0,0"
+                BorderThickness="1"
+                Content="Trim Whitespaces"
+                IsChecked="{Binding Trim_Whitespaces, Mode=TwoWay}" />
+
+
+            <CheckBox
+                x:Name="trimNewlineCheckbox"
+                Margin="0,0,0,0"
+                BorderThickness="1"
+                Content="Trim Newlines"
+                IsChecked="{Binding Trim_Newlines, Mode=TwoWay}" />
+
+        </StackPanel>
+
+        <TextBlock
+            Grid.Row="4"
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Text="Click Button =&gt; Press Hotkey" />
+
+        <StackPanel
+            Grid.Row="4"
+            Grid.Column="2"
+            Grid.ColumnSpan="2"
+            HorizontalAlignment="Left"
+            Orientation="Horizontal"
+            Spacing="10">
+
+            <CheckBox
+                Margin="0,0,0,0"
+                BorderThickness="1"
+                Content="Main + Clipboard"
+                IsChecked="{Binding Append_Clipboard, Mode=TwoWay}" />
+
+            <CheckBox
+                Margin="0,0,0,0"
+                BorderThickness="1"
+                Content="Modal + Clipboard"
+                IsChecked="{Binding Append_Clipboard_Modal, Mode=TwoWay}" />
+
+        </StackPanel>
+
+    </Grid>
+</UserControl>

@@ -1,0 +1,104 @@
+<Page
+    x:Class="wingman.Views.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:views="using:wingman.Views"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    Style="{StaticResource CommonPageStyle}"
+    mc:Ignorable="d">
+
+    <Grid Style="{StaticResource PageBodyGridStyle}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="75" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Orientation="Horizontal">
+            <TextBlock
+                Margin="0,0,5,0"
+                VerticalAlignment="Center"
+                Text="Set your preprompt :" />
+            <TextBox
+                MaxWidth="550"
+                Margin="1,0,0,0"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                AcceptsReturn="True"
+                CanBeScrollAnchor="True"
+                Text="{Binding PrePrompt, Mode=TwoWay}"
+                TextWrapping="Wrap" />
+        </StackPanel>
+
+        <!--
+        <StackPanel
+            Grid.Row="0"
+            Margin="16,32,16,0"
+            Orientation="Horizontal">
+            <Button Command="{x:Bind ViewModel.ActivateChatGPT}" Content="CLICK ME!" />
+            <TextBlock
+                Width="200"
+                Margin="0,0,8,0"
+                Text="Choose stdin target:" />
+            <ComboBox
+                x:Name="stdinTargetComboBox"
+                Width="200"
+                Margin="0"
+                ItemsSource="{x:Bind ViewModel.StdInTargetOptions}"
+                PlaceholderText="Select an option..."
+                SelectedItem="{x:Bind ViewModel.SelectedStdInTarget, Mode=TwoWay}" />
+        </StackPanel>
+        -->
+
+
+        <!--  Audio Dropdown + Slider Configs + Volume Progressbar  -->
+        <Border
+            Grid.Row="1"
+            Margin="1,5,0,0"
+            BorderBrush="White"
+            BorderThickness="1">
+            <views:AudioInputControl Margin="3" />
+        </Border>
+
+        <Border
+            Grid.Row="1"
+            Margin="0,0,0,0"
+            BorderBrush="#E3E3E3"
+            BorderThickness="1,1,1,1" />
+
+        <Border
+            Grid.Row="2"
+            Margin="1,5,0,0"
+            BorderBrush="White"
+            BorderThickness="1">
+            <views:OpenAIControl Margin="3" />
+        </Border>
+
+        <Border
+            Grid.Row="1"
+            Margin="0,0,0,0"
+            BorderBrush="#E3E3E3"
+            BorderThickness="1,1,1,1" />
+
+        <Image
+            x:Name="PrimaryLogo"
+            Grid.Row="6"
+            Width="250"
+            Height="186"
+            VerticalAlignment="Center"
+            Source="../Assets/wingman.png"
+            Stretch="Uniform" />
+
+
+    </Grid>
+
+
+
+</Page>
+

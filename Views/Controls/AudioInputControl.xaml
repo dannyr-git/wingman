@@ -1,0 +1,101 @@
+<UserControl
+    x:Class="wingman.Views.AudioInputControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:Helpers="using:wingman.Helpers"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:wingman"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <Helpers:ProgressBarValueToColorConverter x:Key="ProgressBarValueToColorConverter" />
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="50" />
+            <ColumnDefinition Width="*" MinWidth="350" />
+            <ColumnDefinition Width="150" />
+            <ColumnDefinition Width="150" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!--  Refresh Button  -->
+        <Button
+            x:Name="RefreshButton"
+            Grid.Row="0"
+            Grid.Column="0"
+            Margin="8,0,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Center"
+            Command="{x:Bind ViewModel.RefreshDevices}"
+            Content="&#xE117;"
+            FontFamily="Segoe MDL2 Assets"
+            ToolTipService.ToolTip="Refreshes device list" />
+
+        <!--  Microphone Device Row  -->
+        <StackPanel
+            Grid.Row="0"
+            Grid.Column="1"
+            Margin="8,0,0,0"
+            Orientation="Horizontal">
+            <TextBlock VerticalAlignment="Center" Text="Audio In:" />
+            <ComboBox
+                x:Name="microphoneComboBox"
+                MinWidth="250"
+                Margin="8,0,0,0"
+                ItemsSource="{x:Bind ViewModel.MicrophoneDeviceOptions}"
+                PlaceholderText="Select a device..."
+                SelectedItem="{x:Bind ViewModel.SelectedMicrophoneDevice, Mode=TwoWay}" />
+        </StackPanel>
+
+        <ProgressBar
+            x:Name="MyProgressBar"
+            Grid.Row="0"
+            Grid.Column="2"
+            Grid.ColumnSpan="2"
+            MinWidth="150"
+            MinHeight="6"
+            Margin="8,0,0,0"
+            Foreground="{x:Bind ViewModel.ProgressBarValue, Mode=OneWay, Converter={StaticResource ProgressBarValueToColorConverter}}"
+            IsIndeterminate="False"
+            Maximum="100"
+            Minimum="0"
+            Value="{x:Bind ViewModel.ProgressBarValue, Mode=OneWay}" />
+
+        <!--  Microphone Volume and Gain Sliders  -->
+        <!--  TODO:  Not implemented functionality  -->
+        <StackPanel
+            Grid.Row="1"
+            Grid.Column="2"
+            Grid.ColumnSpan="2"
+            Orientation="Horizontal">
+            <Slider
+                x:Name="microphoneVolumeSlider"
+                Width="150"
+                Margin="8,0"
+                IsEnabled="false"
+                Maximum="100"
+                Minimum="0"
+                Value="50" />
+            <Slider
+                x:Name="microphoneGainSlider"
+                Width="150"
+                Margin="8,0"
+                IsEnabled="false"
+                Maximum="100"
+                Minimum="0"
+                Value="50" />
+        </StackPanel>
+
+    </Grid>
+
+
+
+
+
+</UserControl>
