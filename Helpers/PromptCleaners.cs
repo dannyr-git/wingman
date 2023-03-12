@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace wingman.Helpers
@@ -8,21 +7,9 @@ namespace wingman.Helpers
     {
         public static string CleanBlockIdentifiers(string input)
         {
-            string[] identifiers = Enum.GetNames(typeof(CodeBlockIdentifiers))
-                .Select(name => name == "cplusplus" ? "c++" : name)
-                .ToArray();
-
-            //foreach (string identifier in identifiers)
-            //{
             string pattern = @"(\n)?(```(csharp|cpp|c\+\+|c|python|ruby|perl|php|html|css|javascript|java|typescript|swift|objectivec|go|kotlin|rust|scala|sql|sh|bash|json|yaml|xml|markdown))(\n)?|(\n)?(```)(\n)?";
 
-
-            //string pattern = $@"(\n)?(```{identifier})(\n)?";
-            //string pattern = $@"(\n)?(```{identifier})(\n)?|(\n)?(```)(\n)?";
             input = Regex.Replace(input, pattern, "");
-            //pattern = $@"(\n)?(```)(\n)?";
-            //input = Regex.Replace(input, pattern, "");
-            //}
 
             return input;
         }

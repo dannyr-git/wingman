@@ -7,8 +7,8 @@ using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.ApplicationModel.Core;
-using wingman.Natives;
 using wingman.Interfaces;
+using wingman.Natives;
 
 namespace wingman.ViewModels
 {
@@ -40,7 +40,7 @@ namespace wingman.ViewModels
             _keybindEvents = keybindEvents;
 
             SaveButtonEnabled = true;
-            _apikey = _openAIService.GetApiKey().Result;
+            settingsService.TryLoad<string?>("OpenAI", "ApiKey", out var _apikey);
             IsEnabled = CanExecuteApplyKeyAndRestartCommand();
             ApplyKeyAndRestartCommand = new RelayCommand(ExecuteApplyKeyAndRestartCommand, CanExecuteApplyKeyAndRestartCommand);
 
@@ -225,7 +225,7 @@ namespace wingman.ViewModels
             set
             {
                 SetProperty(ref _apikey, value);
-                _openAIService.SetApiKey(value);
+                _settingsService.TrySave("OpenAI", "ApiKey", value);
                 IsEnabled = CanExecuteApplyKeyAndRestartCommand();
             }
         }

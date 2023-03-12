@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.Storage.FileProperties;
@@ -24,24 +23,6 @@ namespace wingman.Services
         {
             _openAIService = openAIService;
             this.settingsService = settingsService;
-        }
-
-        public async Task<string?> GetApiKey()
-        {
-            settingsService.TryLoad<string?>("OpenAI", "ApiKey", out var apiKey);
-            return apiKey;
-        }
-
-        public async Task SetApiKey(string key)
-        {
-            if (key != null)
-                settingsService.TrySave("OpenAI", "ApiKey", key);
-        }
-
-        public async Task<bool> IsValidKey()
-        {
-            var API_KEY = GetApiKey().Result;
-            return !string.IsNullOrEmpty(API_KEY) && Regex.IsMatch(API_KEY, @"^sk-[a-z0-9]{49}$");
         }
 
         public async Task<string> GetResponse(string prompt)
