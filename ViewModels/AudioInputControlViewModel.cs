@@ -85,6 +85,7 @@ namespace wingman.ViewModels
         {
             if (!_disposing && !_disposed)
                 _dispatcherQueue.TryEnqueue(() => { ProgressBarValue = volume; });
+
         }
 
         private async void PopulateMicrophoneDeviceOptions()

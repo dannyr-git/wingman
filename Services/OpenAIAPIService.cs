@@ -4,9 +4,11 @@ using OpenAI.GPT3.ObjectModels.RequestModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Windows.Storage;
+using Windows.Storage.FileProperties;
 using Windows.Storage.Streams;
 using wingman.Helpers;
 using wingman.Interfaces;
@@ -89,32 +91,51 @@ namespace wingman.Services
             }
         }
 
+        public async Task<byte[]> ReadFileBytes(StorageFile file)
+        {
+            BasicProperties fileProperties;
+
+            try
+            {
+                fileProperties = await file.GetBasicPropertiesAsync();
+            }
+            catch (Exception e)
+            {
+                throw new Exception($"Failed to get basic properties: {e.Message}");
+            }
+            var fileSize = fileProperties.Size;
+
+            byte[] fileBytes = new byte[fileSize];
+
+            using (var fileStream = await file.OpenAsync(FileAccessMode.Read))
+            {
+                await fileStream.ReadAsync(fileBytes.AsBuffer(), (uint)fileSize, InputStreamOptions.None);
+            }
+
+            return fileBytes;
+        }
+
         public async Task<string> GetWhisperResponse(StorageFile inmp3)
         {
-            using (var stream = await inmp3.OpenReadAsync())
+            var fileBytes = await ReadFileBytes(inmp3);
+
+            var completionResult = await _openAIService.Audio.CreateTranscription(new AudioCreateTranscriptionRequest
             {
-                var reader = new DataReader(stream);
-                var bytes = new byte[stream.Size];
-                await reader.LoadAsync((uint)stream.Size);
-                reader.ReadBytes(bytes);
+                Model = Models.WhisperV1,
+                ResponseFormat = StaticValues.AudioStatics.ResponseFormat.Text,
+                File = fileBytes,
+                FileName = inmp3.Name,
+            });
 
-                var completionResult = await _openAIService.Audio.CreateTranscription(new AudioCreateTranscriptionRequest
-                {
-                    Model = Models.WhisperV1,
-                    ResponseFormat = StaticValues.AudioStatics.ResponseFormat.Text,
-                    File = bytes,
-                    FileName = inmp3.Name,
-                });
-
-                if (completionResult.Successful)
-                {
-                    return completionResult.Text;
-                }
-                else
-                {
-                    throw new Exception($"Failed to generate response: {completionResult.Error?.Message}");
-                }
+            if (completionResult.Successful)
+            {
+                return completionResult.Text;
+            }
+            else
+            {
+                throw new Exception($"Failed to generate response: {completionResult.Error?.Message}");
             }
         }
+
     }
 }

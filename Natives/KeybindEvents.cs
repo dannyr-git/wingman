@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Windows.UI.Input.Preview.Injection;
 using wingman.Interfaces;
+using wingman.Natives.Helpers;
 
 namespace wingman.Natives
 {
@@ -9,6 +11,7 @@ namespace wingman.Natives
         private readonly INativeKeyboard nativeKeyboard;
         private readonly HookProvider hookProvider;
         private readonly ISettingsService settingsService;
+        InputInjector inputInjector;
 
         public KeybindEvents(INativeKeyboard nativeKeyboard,
             HookProvider hookProvider,
@@ -21,6 +24,8 @@ namespace wingman.Natives
 
             nativeKeyboard.OnKeyDown += NativeKeyboard_OnKeyDown;
             nativeKeyboard.OnKeyUp += NativeKeyboard_OnKeyUp;
+
+            inputInjector = InputInjector.TryCreate();
 
             Enabled = true;
         }
@@ -100,13 +105,13 @@ namespace wingman.Natives
         {
             if (input == keybind)
             {
-                //logger.Information("Keybind Triggered - {keybindName}", name);
                 if (func != null)
                 {
                     returnTask = func.Invoke();
                 }
 
-                SendInputIf(keybind, input, returnTask);
+
+                //SendInputIf(keybind, input, returnTask);
             }
         }
 
@@ -119,8 +124,7 @@ namespace wingman.Natives
                     if (!await task)
                     {
                         Enabled = false;
-                        //nativeKeyboard.SendInput(keybind);
-                        //TODO: implement sending the input if the task failed
+                        inputInjector.InjectKeyboardInput(KeyConverter.NormalizeKeystroke(keybind));
                         await Task.Delay(200);
                         Enabled = true;
                     }

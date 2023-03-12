@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 
 namespace wingman.Helpers
 {
@@ -9,16 +8,32 @@ namespace wingman.Helpers
         {
             // Remove code block identifier at the beginning of the string, if any
             var identifiers = new string[] { "c", "cpp", "java", "python", "ruby", "perl", "php", "html", "css", "javascript", "typescript", "swift", "objective-c", "go", "kotlin", "rust", "scala", "sql", "sh", "bash", "json", "yaml", "xml", "markdown" };
-            var index = input.IndexOf("\n");
-            if (index != -1 && (input.Contains("```") || identifiers.Any(id => input.StartsWith(id + "\n"))))
+
+            var index = input.IndexOf("```");
+
+            if (index == -1)
+                return input;
+
+            input = input.Substring(index + 1);
+
+            foreach (string id in identifiers)
             {
-                input = input.Substring(index + 1);
+                if (input.StartsWith(id) && input.Length > (input.Length - id.Length))
+                {
+                    input = input.Substring(id.Length);
+                    break;
+                }
             }
 
             // Remove code block identifier at the end of the string, if any
-            index = input.LastIndexOf("\n```");
+            index = input.LastIndexOf("```");
             if (index != -1)
             {
+                // decrement index while there are whitespace characters
+                while (index > 0 && char.IsWhiteSpace(input[index - 1]))
+                {
+                    index--;
+                }
                 input = input.Substring(0, index);
             }
 

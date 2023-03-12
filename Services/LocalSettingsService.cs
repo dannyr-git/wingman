@@ -1,20 +1,36 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text.Json;
-using Windows.Storage;
 using wingman.Interfaces;
 
 namespace wingman.Services
 {
     public class LocalSettingsService : ISettingsService
     {
-        private readonly ApplicationDataContainer _rootContainer = ApplicationData.Current.LocalSettings;
+        private Dictionary<string, Dictionary<string, string>> _settings;
+        private readonly string _settingsFilePath;
+
+        public LocalSettingsService()
+        {
+            _settings = new Dictionary<string, Dictionary<string, string>>();
+            _settingsFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Wingman", "Wingman.settings");
+
+            if (File.Exists(_settingsFilePath))
+            {
+                LoadSettingsFromFile();
+            }
+            else
+            {
+                CreateSettingsFileDirectory();
+            }
+        }
 
         public T? Load<T>(string containerName, string key)
         {
             Validate(containerName, key);
 
-            if (_rootContainer.Containers[containerName].Values[key] is string jsonString)
+            if (_settings.TryGetValue(containerName, out var container) && container.TryGetValue(key, out var jsonString))
             {
                 return JsonSerializer.Deserialize<T>(jsonString);
             }
@@ -42,16 +58,21 @@ namespace wingman.Services
         {
             try
             {
-                ApplicationDataContainer? container = _rootContainer.Containers.GetValueOrDefault(containerName);
-                container ??= _rootContainer.CreateContainer(containerName, ApplicationDataCreateDisposition.Always);
-                container.Values[key] = JsonSerializer.Serialize(value);
+                if (!_settings.TryGetValue(containerName, out var container))
+                {
+                    container = new Dictionary<string, string>();
+                    _settings.Add(containerName, container);
+                }
+
+                container[key] = JsonSerializer.Serialize(value);
+
+                SaveSettingsToFile();
             }
             catch (Exception ex)
             {
                 throw new Exception($"Failed to save value to container '{containerName}' with key '{key}': {ex.Message}");
             }
         }
-
 
         public bool TrySave<T>(string containerName, string key, T value)
         {
@@ -66,23 +87,18 @@ namespace wingman.Services
             }
         }
 
-
         public void RemoveContainer(string containerName)
         {
-            _rootContainer.DeleteContainer(containerName);
+            _settings.Remove(containerName);
+
+            SaveSettingsToFile();
         }
 
         public void RemoveAllSettings()
         {
-            foreach (KeyValuePair<string, ApplicationDataContainer> container in _rootContainer.Containers)
-            {
-                _rootContainer.DeleteContainer(container.Key);
-            }
+            _settings.Clear();
 
-            foreach (KeyValuePair<string, object> value in _rootContainer.Values)
-            {
-                _rootContainer.Values.Clear();
-            }
+            SaveSettingsToFile();
         }
 
         private void Validate(string containerName, string key)
@@ -97,14 +113,56 @@ namespace wingman.Services
                 throw new KeyIsNullOrEmptyException(containerName, key);
             }
 
-            if (_rootContainer.Containers.ContainsKey(containerName) is false)
+            if (_settings.ContainsKey(containerName) is false)
             {
                 throw new ContainerNameDoesNotExistException(containerName);
             }
 
-            if (_rootContainer.Containers[containerName].Values.ContainsKey(key) is false)
+            if (_settings[containerName].ContainsKey(key) is false)
             {
                 throw new KeyDoesNotExistException(containerName, key);
+            }
+        }
+
+        private void LoadSettingsFromFile()
+        {
+            try
+            {
+                var settingsJson = File.ReadAllText(_settingsFilePath);
+                _settings = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, string>>>(settingsJson);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to load settings from file: {ex.Message}");
+            }
+        }
+
+        private void SaveSettingsToFile()
+        {
+            try
+            {
+                var settingsJson = JsonSerializer.Serialize(_settings);
+                File.WriteAllText(_settingsFilePath, settingsJson);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to save settings to file: {ex.Message}");
+            }
+        }
+
+        private void CreateSettingsFileDirectory()
+        {
+            try
+            {
+                var settingsFileDirectory = Path.GetDirectoryName(_settingsFilePath);
+                if (!Directory.Exists(settingsFileDirectory))
+                {
+                    Directory.CreateDirectory(settingsFileDirectory);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to create settings file directory: {ex.Message}");
             }
         }
 
@@ -148,5 +206,6 @@ namespace wingman.Services
             {
             }
         }
+
     }
 }

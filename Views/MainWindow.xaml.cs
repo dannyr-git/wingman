@@ -10,15 +10,13 @@ namespace wingman.Views
         public MainWindow()
         {
             InitializeComponent();
-            ExtendsContentIntoTitleBar = true;
-            SetTitleBar(TitleBar);
+            //ExtendsContentIntoTitleBar = true;
+            SetTitleBar(MainTitleBar);
             ViewModel = Ioc.Default.GetRequiredService<MainWindowViewModel>();
 
             this.SetWindowSize(800, 600);
             this.SetIsResizable(false);
         }
-
-        public AppTitleBar TitleBar { get => AppTitleBar; }
 
         public MainWindowViewModel ViewModel { get; }
     }

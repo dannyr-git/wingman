@@ -9,18 +9,27 @@
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" RowDefinitions="42,*">
         <!--  App Title Bar  -->
-        <views:AppTitleBar
-            x:Name="AppTitleBar"
-            x:Uid="AppTitleBar"
-            Grid.Row="0"
-            VerticalAlignment="Center"
-            Icon="../Assets/wingman.png"
-            IconHeight="30"
-            IconMargin="2,0,10,7"
-            IconWidth="40"
-            TextFontSize="15"
-            TextMargin="10,0,0,0"
-            TextWrapping="NoWrap" />
+        <Grid x:Name="MainTitleBar">
+            <Image
+                Grid.Row="0"
+                Width="40"
+                Height="30"
+                Margin="2,0,10,7"
+                HorizontalAlignment="Left"
+                Source="../Assets/wingman.png" />
+            <TextBlock
+                x:Name="MainAppTitleTextBlock"
+                Grid.Row="0"
+                Width="Auto"
+                Margin="50,0"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                FontWeight="Bold"
+                Foreground="Black"
+                IsColorFontEnabled="True"
+                Text="Wingman"
+                TextWrapping="NoWrap" />
+        </Grid>
 
         <views:MainPage Grid.Row="1" />
 

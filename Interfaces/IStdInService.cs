@@ -7,5 +7,6 @@ namespace wingman.Interfaces
     {
         void SetProcess(Process process);
         Task SendStringAsync(string str);
+        Task SendWithClipboardAsync(string str);
     }
 }

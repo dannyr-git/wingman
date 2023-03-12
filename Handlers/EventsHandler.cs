@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Windows.ApplicationModel.DataTransfer;
 using Windows.Media.Core;
 using Windows.Media.Playback;
 using wingman.Helpers;
@@ -34,23 +33,30 @@ namespace wingman.Handlers
             this.chatGPTService = chatGPTService;
             this.stdInService = stdInService;
             this.settingsService = settingsService;
+            mediaPlayer = new MediaPlayer();
             //this.namedPipesService = namedPipesService;
 
             Initialize();
         }
 
         // hacking this together
-        private MediaPlayer mediaPlayer = new MediaPlayer();
+        private MediaPlayer mediaPlayer;
 
         private void PlayNormalChime()
         {
-            mediaPlayer.Source = MediaSource.CreateFromUri(new Uri("ms-appx:///Assets/normalchime.aac"));
+            //going to unpackaged broke literally everything ... everything requires a package identity
+            //mediaPlayer.Source = MediaSource.CreateFromUri(new Uri("ms-appx:///Assets/normalchime.aac"));
+            var uri = new Uri(AppDomain.CurrentDomain.BaseDirectory + @"Assets\\normalchime.aac");
+
+            mediaPlayer.Source = MediaSource.CreateFromUri(uri);
             mediaPlayer.Play();
         }
 
         private void PlayHighChime()
         {
-            mediaPlayer.Source = MediaSource.CreateFromUri(new Uri("ms-appx:///Assets/highchime.aac"));
+            var uri = new Uri(AppDomain.CurrentDomain.BaseDirectory + @"Assets\\lowchime.aac");
+            mediaPlayer.Source = MediaSource.CreateFromUri(uri);
+
             mediaPlayer.Play();
         }
 
@@ -143,7 +149,7 @@ namespace wingman.Handlers
             {
                 resp = await chatGPTService.GetResponse(prompt);
 
-                await stdInService.SendStringAsync(resp);
+                await stdInService.SendWithClipboardAsync(resp);
             }
             MouseArrow();
 
@@ -222,9 +228,7 @@ namespace wingman.Handlers
                 dialog.SetWindowSize(640, 480);
                 dialog.Title = "Wingman Codeblock";
 
-                DataPackage package = new DataPackage();
-                package.SetText(resp);
-                Clipboard.SetContent(package);
+                ClipboardHelper.SetText(resp);
             }
             MouseArrow();
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Windows.Devices.Enumeration;
@@ -259,7 +260,13 @@ namespace wingman.Services
             string uniqueId = DateTime.UtcNow.ToString("yyyyMMddHHmmssfff");
             string uniqueFileName = $"chatsample_{uniqueId}.mp3";
 
-            Windows.Storage.StorageFolder temporaryFolder = ApplicationData.Current.TemporaryFolder;
+            //Windows.Storage.StorageFolder temporaryFolder = ApplicationData.Current.TemporaryFolder;            
+            // ^-- another innocent bystandard that doesn't work on unpackaged WinUI
+
+            var path = Path.GetTempPath();
+            await Task.Delay(100);
+            StorageFolder temporaryFolder = await StorageFolder.GetFolderFromPathAsync(path);
+
             StorageFile sampleFile = await temporaryFolder.CreateFileAsync(uniqueFileName, CreationCollisionOption.ReplaceExisting);
 
             var outProfile = MediaEncodingProfile.CreateMp3(AudioEncodingQuality.High);
@@ -288,6 +295,7 @@ namespace wingman.Services
 
             return sampleFile;
         }
+
         StorageFile? tmpFile { get; set; } = null;
 
         public async Task StartRecording()

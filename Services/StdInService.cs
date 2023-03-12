@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -33,25 +34,26 @@ namespace wingman.Services
             _process = process ?? throw new ArgumentNullException(nameof(process));
         }
 
-        ISettingsService settingsService;
+        //ISettingsService settingsService;
 
-        public StdInService(ISettingsService settingsService)
+        public StdInService()
         {
-            this.settingsService = settingsService;
+            //    this.settingsService = settingsService;
         }
 
 
-        public async Task SendStringAsync(string str)
+        public async Task SendWithClipboardAsync(string str)
         {
             InputInjector inputInjector = InputInjector.TryCreate();
             // Save whatever is on the clipboard
-            var savedClipboard = await ClipboardHelper.GetTextAsync();
+            var savedClipboard = ClipboardHelper.GetTextAsync().Result;
+
 
             ClipboardHelper.SetText(str);
 
 
             // Paste the clipboard out
-            inputInjector.InjectKeyboardInput(new[] {
+            await Task.Run(() => inputInjector.InjectKeyboardInput(new[] {
                 new InjectedInputKeyboardInfo
                 {
             VirtualKey = (ushort) VirtualKey.Control,
@@ -67,16 +69,13 @@ namespace wingman.Services
             VirtualKey = (ushort) VirtualKey.Control,
             KeyOptions = InjectedInputKeyOptions.KeyUp
         }
-    });
+    }));
 
-
-            // Restore the original clipboard contents
             ClipboardHelper.SetText(savedClipboard);
         }
 
         // The new InputInjector class works 500x better than SendKeys; so we abandon NativeKeyboard here 
 
-        /*
         public async Task SendStringAsync(string str)
         {
             InputInjector inputInjector = InputInjector.TryCreate();
@@ -145,7 +144,10 @@ namespace wingman.Services
 
 
         }
-        */
+
+
+
+
 
 
     }

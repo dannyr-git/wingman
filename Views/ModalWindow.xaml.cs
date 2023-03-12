@@ -8,7 +8,7 @@ namespace wingman.Views
         public ModalWindow(string input)
         {
             InitializeComponent();
-            ExtendsContentIntoTitleBar = true;
+            ExtendsContentIntoTitleBar = false;
             SetTitleBar(ModalTitleBar);
             this.SetWindowSize(800, 600);
             //this.SetIsResizable(false);

@@ -13,6 +13,13 @@
     <EnablePreviewMsixTooling>true</EnablePreviewMsixTooling>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+
+  <PropertyGroup>
+    <WindowsAppSDKBootstrapAutoInitializeOptions_Default>true</WindowsAppSDKBootstrapAutoInitializeOptions_Default>
+    <WindowsAppSDKBootstrapAutoInitializeOptions_OnNoMatch_ShowUI>true</WindowsAppSDKBootstrapAutoInitializeOptions_OnNoMatch_ShowUI>
+    <WindowsAppSDKBootstrapAutoInitializeOptions_OnError_DebugBreak>true</WindowsAppSDKBootstrapAutoInitializeOptions_OnError_DebugBreak>
+    <WindowsAppSDKBootstrapAutoInitializeOptions_OnError_DebugBreak_IfDebuggerAttached>true</WindowsAppSDKBootstrapAutoInitializeOptions_OnError_DebugBreak_IfDebuggerAttached>
+  </PropertyGroup>  
   
   <ItemGroup>
     <PackageReference Include="Betalgo.OpenAI.GPT3" Version="6.7.3" />
