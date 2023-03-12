@@ -7,16 +7,17 @@
   xmlns:uap4="http://schemas.microsoft.com/appx/manifest/uap/windows10/4"
   xmlns:iot="http://schemas.microsoft.com/appx/manifest/iot/windows10"
   xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3"
-  IgnorableNamespaces="uap rescap uap4 iot uap3">
+  xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
+  IgnorableNamespaces="uap rescap uap4 iot uap3 mp">
 
   <Identity
-    Name="4a69ccd3-7016-45c1-8aae-989d7ac54d92"
-    Publisher="CN=Danny Rodriguez"
-    Version="0.1.1.0" />
+    Name="51169DalaInc.WingmanAICodingAssistant"
+    Publisher="CN=AB834B4E-2474-4030-A208-26BD127DFBF8"
+    Version="0.1.11.0" />
 
   <Properties>
-    <DisplayName>Wingman</DisplayName>
-    <PublisherDisplayName>Danny Rodriguez</PublisherDisplayName>
+    <DisplayName>Wingman AI Coding Assistant</DisplayName>
+    <PublisherDisplayName>Dala Inc.</PublisherDisplayName>
     <Logo>Assets\wingman.png</Logo>
   </Properties>
 
@@ -36,7 +37,7 @@
       Executable="$targetnametoken$.exe"
       EntryPoint="$targetentrypoint$">
       <uap:VisualElements
-        DisplayName="Wingman"
+        DisplayName="Wingman AI Coding Assistant"
         Description="None"
         BackgroundColor="white"
         Square150x150Logo="Assets\Square150x150Logo.png" Square44x44Logo="Assets\wingman - Copy.png">
@@ -59,4 +60,5 @@
     <DeviceCapability Name="lowLevel"/>
     <DeviceCapability Name="microphone"/>
   </Capabilities>
+
 </Package>

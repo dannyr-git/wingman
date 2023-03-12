@@ -4,6 +4,7 @@
 
 ## Requirements
 
+### STEP 1  (If you aren't running from Visual Studio)
 You must have Windows App SDK 1.2.4 or higher (Corresponds to SDK version 1.2.230217.4)
 
 x64 Link:  https://aka.ms/windowsappsdk/1.2/1.2.230217.4/windowsappruntimeinstall-x64.exe
@@ -12,6 +13,19 @@ x86 Link:  https://aka.ms/windowsappsdk/1.2/1.2.230217.4/windowsappruntimeinstal
 
 Main Link:
 https://docs.microsoft.com/en-us/windows/apps/windows-app-sdk/downloads#windows-app-sdk-10
+
+
+### STEP 2
+
+Download a release
+
+
+### STEP 3
+
+Install with Powershell :
+
+  Add-AppPackage ".\wingman_0.1.2.0_x64.msix" -AllowUnsigned
+
 
 ## Video Link
 
