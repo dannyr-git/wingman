@@ -1,6 +1,16 @@
 # README
-### wingman
 
+# wingman
+
+## Requirements
+
+You must have Windows App SDK 1.2.4 or higher (Corresponds to SDK version 1.2.230217.4)
+
+x64 Link:  https://aka.ms/windowsappsdk/1.2/1.2.230217.4/windowsappruntimeinstall-x64.exe
+
+x86 Link:  https://aka.ms/windowsappsdk/1.2/1.2.230217.4/windowsappruntimeinstall-x86.exe
+
+Main Link:
 https://docs.microsoft.com/en-us/windows/apps/windows-app-sdk/downloads#windows-app-sdk-10
 
 ## Video Link

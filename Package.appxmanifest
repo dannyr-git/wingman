@@ -4,12 +4,15 @@
   xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
   xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
   xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
-  IgnorableNamespaces="uap rescap">
+  xmlns:uap4="http://schemas.microsoft.com/appx/manifest/uap/windows10/4"
+  xmlns:iot="http://schemas.microsoft.com/appx/manifest/iot/windows10"
+  xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3"
+  IgnorableNamespaces="uap rescap uap4 iot uap3">
 
   <Identity
     Name="4a69ccd3-7016-45c1-8aae-989d7ac54d92"
     Publisher="CN=Danny Rodriguez"
-    Version="1.0.0.0" />
+    Version="0.1.1.0" />
 
   <Properties>
     <DisplayName>Wingman</DisplayName>
@@ -49,5 +52,11 @@
 
   <Capabilities>
     <rescap:Capability Name="runFullTrust" />
+    <uap4:Capability Name="userDataTasks"/>
+    <iot:Capability Name="lowLevelDevices"/>
+    <Capability Name="internetClient"/>
+    <uap3:Capability Name="backgroundMediaPlayback"/>
+    <DeviceCapability Name="lowLevel"/>
+    <DeviceCapability Name="microphone"/>
   </Capabilities>
 </Package>
