@@ -34,7 +34,7 @@ namespace wingman.Views
             this.eventsHandler = eventsHandler;
             eventsHandler.InferenceCallback += HandleInferenceAsync;
 
-            //ExtendsContentIntoTitleBar = true;
+            ExtendsContentIntoTitleBar = true;
             SetTitleBar(MainTitleBar);
             ViewModel = Ioc.Default.GetRequiredService<MainWindowViewModel>();
 

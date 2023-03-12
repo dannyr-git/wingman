@@ -177,10 +177,13 @@ namespace wingman.Services
                     var defaultSettings = new Dictionary<string, Dictionary<string, string>>()
                     {
                         {
+                            // Default settings for the "Wingman" container
+                            // TODO: Move these to a separate file, implement settings better
                             "Wingman", new Dictionary<string, string>()
                             {
+                                {"ApiKey", "sk-REPLACEWITHYOURKEY"},
                                 {"Main_Hotkey", "`"},
-                                {"Modal_Hotkey", "Ctrl+T"},
+                                {"Modal_Hotkey", "Alt+`"},
                                 {"Trim_Whitespaces", false.ToString()},
                                 {"Trim_Newlines", false.ToString()},
                                 {"Append_Clipboard", false.ToString()},

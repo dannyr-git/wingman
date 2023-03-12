@@ -64,11 +64,6 @@ namespace wingman
                             {
                                 settings.ApiKey = apiKey;
                             }
-                            else
-                            {
-                                settings.ApiKey = "YOU MUST REPLACE THIS WITH YOUR KEY";
-                                settingsService?.TrySave("OpenAI", "ApiKey", settings.ApiKey);
-                            }
                             //settings.Organization = "Put your organization here";
                             //this is for people who are a part of multiple organizations only, not implementing for now
                         })

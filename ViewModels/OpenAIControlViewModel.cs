@@ -40,11 +40,11 @@ namespace wingman.ViewModels
             _keybindEvents = keybindEvents;
 
             SaveButtonEnabled = true;
-            settingsService.TryLoad<string?>("OpenAI", "ApiKey", out var _apikey);
             IsEnabled = CanExecuteApplyKeyAndRestartCommand();
             ApplyKeyAndRestartCommand = new RelayCommand(ExecuteApplyKeyAndRestartCommand, CanExecuteApplyKeyAndRestartCommand);
 
             Main_Hotkey_Toggled = false;
+            Api_Key = _settingsService.Load<string>("OpenAI", "ApiKey");
             Main_Hotkey = _settingsService.Load<string>("Wingman", "Main_Hotkey");
             Modal_Hotkey = _settingsService.Load<string>("Wingman", "Modal_Hotkey");
             Trim_Newlines = _settingsService.Load<bool>("Wingman", "Trim_Newlines");
@@ -219,7 +219,7 @@ namespace wingman.ViewModels
             return true;
         }
 
-        public string API_KEY
+        public string Api_Key
         {
             get => _apikey;
             set

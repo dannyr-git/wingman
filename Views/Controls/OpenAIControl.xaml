@@ -44,7 +44,7 @@
             VerticalAlignment="Center"
             CharacterSpacing="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
             MaxLength="51"
-            Text="{Binding API_KEY, Mode=TwoWay}"
+            Text="{Binding Api_Key, Mode=TwoWay}"
             TextWrapping="NoWrap" />
 
         <TextBlock
