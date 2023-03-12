@@ -37,25 +37,8 @@ namespace wingman
 
             Ioc.Default.GetRequiredService<EventsHandler>(); // make sure events are initialized
 
-            var settingsService = Ioc.Default.GetRequiredService<ISettingsService>();
-            if (!settingsService.TryLoad<bool>("App", "FirstRun", out var FirstRun))
-            {
-                settingsService.Save("App", "FirstRun", false);
-
-                settingsService.Save("Wingman", "Main_Hotkey", "`");
-                settingsService.Save("Wingman", "Modal_Hotkey", "Ctrl+T");
-
-                settingsService.Save("Wingman", "Trim_Whitespaces", false);
-                settingsService.Save("Wingman", "Trim_Newlines", false);
-                settingsService.Save("Wingman", "Append_Clipboard", false);
-                settingsService.Save("Wingman", "Append_Clipboard_Modal", false);
-
-                settingsService.Save("Wingman", "System_Preprompt", "You are a programming assistant.  You are only allowed to respond with the raw code.  Do not generate explanations.  Do not preface.  Do not follow-up after the code.");
-            }
-
             IAppActivationService appWindowService = Ioc.Default.GetRequiredService<IAppActivationService>();
             appWindowService.Activate(args);
-
         }
 
 

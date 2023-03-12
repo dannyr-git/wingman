@@ -20,6 +20,8 @@ namespace wingman.Handlers
         private readonly ISettingsService settingsService;
         //private readonly INamedPipesService namedPipesService;
 
+        public EventHandler<bool> InferenceCallback;
+
         public EventsHandler(IKeybindEvents events,
             IMicrophoneDeviceService micService,
             IOpenAIAPIService chatGPTService,
@@ -60,17 +62,14 @@ namespace wingman.Handlers
             mediaPlayer.Play();
         }
 
-        // This was a named pipes service implementation to try to work around the issue of the mouse cursor not changing
-        // turns out, WinUI 3 has Current Window and CoreWindow bugs right now :-p
-        // kind-of a waste of time, but leaving namedPipes implementation here just in case
         private async void MouseWait()
         {
-            //await namedPipesService.SendMessageAsync("MouseWait");
+            InferenceCallback?.Invoke(this, true);
         }
 
         private async void MouseArrow()
         {
-            //await namedPipesService.SendMessageAsync("MouseArrow");
+            InferenceCallback?.Invoke(this, false);
         }
 
         private void Initialize()

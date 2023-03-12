@@ -4,6 +4,7 @@ using Microsoft.UI.Dispatching;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.ApplicationModel.Core;
 using Windows.Media.Devices;
@@ -23,6 +24,7 @@ namespace wingman.ViewModels
         private DispatcherQueue _dispatcherQueue;
 
         private List<string> _microphoneDeviceOptions = new List<string>();
+        private EventHandler<double> MicrophoneService_VolumeChanged;
         private double _progressBarValue;
 
         public ICommand RefreshDevices { get; }
@@ -36,7 +38,13 @@ namespace wingman.ViewModels
             _microphoneDeviceService = microphoneDeviceService;
             _settingsService = settingsService;
 
+            MicrophoneService_VolumeChanged = async (sender, volume) =>
+            {
+                await volumeHandler(volume);
+            };
+
             _microphoneDeviceService.VolumeChanged += MicrophoneService_VolumeChanged;
+
             _dispatcherQueue = DispatcherQueue.GetForCurrentThread();
 
             RefreshDevices = new RelayCommand(PopulateMicrophoneDeviceOptions);
@@ -81,19 +89,25 @@ namespace wingman.ViewModels
             _disposed = true;
         }
 
-        private void MicrophoneService_VolumeChanged(object sender, double volume)
+
+        private async Task volumeHandler(double volume)
         {
             if (!_disposing && !_disposed)
-                _dispatcherQueue.TryEnqueue(() => { ProgressBarValue = volume; });
-
+                //_dispatcherQueue.TryEnqueue(() => { ProgressBarValue = volume; });
+                await CommunityToolkit.WinUI.DispatcherQueueExtensions.EnqueueAsync(_dispatcherQueue, () => { ProgressBarValue = volume; });
         }
 
         private async void PopulateMicrophoneDeviceOptions()
         {
             _micDevices = new List<MicrophoneDevice>();
             var devices = await _microphoneDeviceService.GetMicrophoneDevicesAsync();
+
+            if (devices == null || devices.Count == 0)
+                return;
+
             foreach (MicrophoneDevice dev in devices)
                 _micDevices.Add(dev);
+
             _microphoneDeviceOptions = devices.Select(d => d.Name).ToList();
             OnPropertyChanged(nameof(MicrophoneDeviceOptions));
         }

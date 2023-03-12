@@ -6,6 +6,18 @@ using wingman.Interfaces;
 
 namespace wingman.Services
 {
+    /*  These are my default values :
+
+                settingsService.Save("Wingman", "Main_Hotkey", "`");
+                settingsService.Save("Wingman", "Modal_Hotkey", "Ctrl+T");
+
+                settingsService.Save("Wingman", "Trim_Whitespaces", false);
+                settingsService.Save("Wingman", "Trim_Newlines", false);
+                settingsService.Save("Wingman", "Append_Clipboard", false);
+                settingsService.Save("Wingman", "Append_Clipboard_Modal", false);
+
+                settingsService.Save("Wingman", "System_Preprompt", "You are a programming assistant.  You are only allowed to respond with the raw code.  Do not generate explanations.  Do not preface.  Do not follow-up after the code.");     
+     */
     public class LocalSettingsService : ISettingsService
     {
         private Dictionary<string, Dictionary<string, string>> _settings;
@@ -159,12 +171,40 @@ namespace wingman.Services
                 {
                     Directory.CreateDirectory(settingsFileDirectory);
                 }
+
+                if (!File.Exists(_settingsFilePath))
+                {
+                    var defaultSettings = new Dictionary<string, Dictionary<string, string>>()
+                    {
+                        {
+                            "Wingman", new Dictionary<string, string>()
+                            {
+                                {"Main_Hotkey", "`"},
+                                {"Modal_Hotkey", "Ctrl+T"},
+                                {"Trim_Whitespaces", false.ToString()},
+                                {"Trim_Newlines", false.ToString()},
+                                {"Append_Clipboard", false.ToString()},
+                                {"Append_Clipboard_Modal", false.ToString()},
+                                {"System_Preprompt", "You are a programming assistant. You are only allowed to respond with the raw code. Do not generate explanations. Do not preface. Do not follow-up after the code."}
+                            }
+                        }
+                    };
+
+                    var settingsJson = JsonSerializer.Serialize(defaultSettings);
+                    File.WriteAllText(_settingsFilePath, settingsJson);
+                }
             }
             catch (Exception ex)
             {
                 throw new Exception($"Failed to create settings file directory: {ex.Message}");
             }
         }
+
+        private void CreateDefaults()
+        {
+            // Not needed, as the default settings will be created by CreateSettingsFileDirectory()
+        }
+
 
         public class LocalSettingsException : Exception
         {

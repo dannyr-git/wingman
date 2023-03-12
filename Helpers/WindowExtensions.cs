@@ -1,12 +1,25 @@
 using Microsoft.UI;
+using Microsoft.UI.Input;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using System;
+using System.Reflection;
 using Windows.Graphics;
 using WinRT.Interop;
 
 namespace wingman.Helpers
 {
+    public static class UIElementExtensions
+    {
+        public static void ChangeCursor(this UIElement uiElement, InputCursor cursor)
+        {
+            Type type = typeof(UIElement);
+            type.InvokeMember("ProtectedCursor", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.SetProperty | BindingFlags.Instance, null, uiElement, new object[] { cursor });
+        }
+
+
+    }
+
     public static class WindowExtensions
     {
         public static AppWindow GetAppWindow(this Window window)

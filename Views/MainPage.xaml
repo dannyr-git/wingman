@@ -59,6 +59,7 @@
 
         <!--  Audio Dropdown + Slider Configs + Volume Progressbar  -->
         <Border
+            x:Name="Test"
             Grid.Row="1"
             Margin="1,5,0,0"
             BorderBrush="White"

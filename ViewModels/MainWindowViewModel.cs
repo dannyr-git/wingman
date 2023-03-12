@@ -4,5 +4,9 @@ namespace wingman.ViewModels
 {
     public partial class MainWindowViewModel : ObservableObject
     {
+        public MainWindowViewModel()
+        {
+        }
+
     }
 }

@@ -1,4 +1,6 @@
 using System;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace wingman.Helpers
 {
@@ -6,39 +8,25 @@ namespace wingman.Helpers
     {
         public static string CleanBlockIdentifiers(string input)
         {
-            // Remove code block identifier at the beginning of the string, if any
-            var identifiers = new string[] { "c", "cpp", "java", "python", "ruby", "perl", "php", "html", "css", "javascript", "typescript", "swift", "objective-c", "go", "kotlin", "rust", "scala", "sql", "sh", "bash", "json", "yaml", "xml", "markdown" };
+            string[] identifiers = Enum.GetNames(typeof(CodeBlockIdentifiers))
+                .Select(name => name == "cplusplus" ? "c++" : name)
+                .ToArray();
 
-            var index = input.IndexOf("```");
+            //foreach (string identifier in identifiers)
+            //{
+            string pattern = @"(\n)?(```(csharp|cpp|c\+\+|c|python|ruby|perl|php|html|css|javascript|java|typescript|swift|objectivec|go|kotlin|rust|scala|sql|sh|bash|json|yaml|xml|markdown))(\n)?|(\n)?(```)(\n)?";
 
-            if (index == -1)
-                return input;
 
-            input = input.Substring(index + 1);
-
-            foreach (string id in identifiers)
-            {
-                if (input.StartsWith(id) && input.Length > (input.Length - id.Length))
-                {
-                    input = input.Substring(id.Length);
-                    break;
-                }
-            }
-
-            // Remove code block identifier at the end of the string, if any
-            index = input.LastIndexOf("```");
-            if (index != -1)
-            {
-                // decrement index while there are whitespace characters
-                while (index > 0 && char.IsWhiteSpace(input[index - 1]))
-                {
-                    index--;
-                }
-                input = input.Substring(0, index);
-            }
+            //string pattern = $@"(\n)?(```{identifier})(\n)?";
+            //string pattern = $@"(\n)?(```{identifier})(\n)?|(\n)?(```)(\n)?";
+            input = Regex.Replace(input, pattern, "");
+            //pattern = $@"(\n)?(```)(\n)?";
+            //input = Regex.Replace(input, pattern, "");
+            //}
 
             return input;
         }
+
 
         public static string TrimWhitespaces(string input)
         {
@@ -58,9 +46,7 @@ namespace wingman.Helpers
 
         public static string TrimNewlines(string input)
         {
-            // Replace all occurrences of newline characters with a single space
-            string[] lines = input.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
-            return string.Join(" ", lines);
+            return Regex.Replace(input, @"(\r\n|\r|\n)+", " ");
         }
 
 

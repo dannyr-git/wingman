@@ -7,7 +7,11 @@
     xmlns:views="using:wingman.Views"
     mc:Ignorable="d">
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" RowDefinitions="42,*">
+    <views:GridExposeCursor
+        x:Name="MainGrid"
+        Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+        RowDefinitions="42,*">
+
         <!--  App Title Bar  -->
         <Grid x:Name="MainTitleBar">
             <Image
@@ -33,6 +37,8 @@
 
         <views:MainPage Grid.Row="1" />
 
-    </Grid>
+        <Button x:Name="ThisIsStupid" Visibility="Collapsed" />
+
+    </views:GridExposeCursor>
 
 </Window>

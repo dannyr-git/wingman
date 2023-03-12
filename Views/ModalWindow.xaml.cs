@@ -14,6 +14,5 @@ namespace wingman.Views
             //this.SetIsResizable(false);
             myView.ViewModel.TextContent = input;
         }
-
     }
 }
