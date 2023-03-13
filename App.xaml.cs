@@ -47,7 +47,6 @@ namespace wingman
                 .ConfigureServices((context, services) =>
                 {
                     _ = services
-                        .AddSingleton<TestHandler>()
                         .AddSingleton<EventsHandler>()
                         .AddSingleton<HookProvider>()
                         .AddSingleton<INativeKeyboard, NativeKeyboard>()

@@ -1,58 +1,66 @@
-# README
 
-# wingman
 
-## Requirements
+# Wingman - Voice Prompts to Code (Win10/11)
 
-### STEP 1  (If you aren't running from Visual Studio)
-You must have Windows App SDK 1.2.4 or higher (Corresponds to SDK version 1.2.230217.4)
+Wingman - A Windows Speech to Code App
 
-x64 Link:  https://aka.ms/windowsappsdk/1.2/1.2.230217.4/windowsappruntimeinstall-x64.exe
 
-x86 Link:  https://aka.ms/windowsappsdk/1.2/1.2.230217.4/windowsappruntimeinstall-x86.exe
+Wingman enables a user to configure global hotkeys to speak into your microphone and to output code from OpenAI's CODEX or ChatGPT models.
+
+Code is either output to STDIN or a 'code block' modal
+
+
+
+
+
+
+
+## Deployment
+
+For the pre-release, an unpackaged self-constained EXE is available for download in the releases section.
+
+Windows Store availability coming soon.
+
+There are some pre-requisites :
+
+### Requirement Windows App Runtime (>= 1.2.4)
+```
+You must have Windows App Runtime 1.2.4 or higher (Corresponds to SDK version 1.2.230217.4)
+
+x64 Link:  
+https://aka.ms/windowsappsdk/1.2/1.2.230217.4/windowsappruntimeinstall-x64.exe
+
+x86 Link:
+https://aka.ms/windowsappsdk/1.2/1.2.230217.4/windowsappruntimeinstall-x86.exe
 
 Main Link:
 https://docs.microsoft.com/en-us/windows/apps/windows-app-sdk/downloads#windows-app-sdk-10
 
+```
 
-### STEP 2
+### Requirement:  VCRedist 
+```
+https://aka.ms/vs/17/release/vc_redist.x86.exe
 
-Download a release
+https://aka.ms/vs/17/release/vc_redist.x64.exe
 
+https://learn.microsoft.com/en-US/cpp/windows/latest-supported-vc-redist?view=msvc-170
 
-### STEP 3
+```
+## Demo
 
-Install with Powershell :
-
-  Add-AppPackage ".\wingman_0.1.2.0_x64.msix" -AllowUnsigned
-
-
-## Video Link
-
-The following is a link to a video: https://youtu.be/lQaH3Y4pMxw
-
-## Description
-
-Wingman is a WinUI 3 Windows App that uses OpenAI's Whisper and ChatGPT/CODEX APIs to generate code from natural language voice prompts and output them to your foreground application. It is designed to be used in tandem with a text editor or IDE to allow for rapid prototyping of code.
+https://youtu.be/lQaH3Y4pMxw
 
 
+## Authors
+
+- [@dannyr-git](https://www.github.com/dannyr-git)
 
 
+## Acknowledgements
 
-## About Whisper API
+ - [Betalgo's DotNet SDK for OpenAI](https://github.com/betalgo/openai)
+ - [AndrewKeepCoding's WinUI scaffolding examples](https://github.com/AndrewKeepCoding)
+ - [@gfodor's dream](https://twitter.com/gfodor/status/1631485954820296706)
 
-Learn More Here:  https://openai.com/blog/introducing-chatgpt-and-whisper-apis
 
-
-## About ChatGPT
-
-Learn More Here:  https://openai.com/blog/chatgpt/
-				  https://openai.com/blog/introducing-chatgpt-and-whisper-apis
-
-ChatGPT is a large language model trained by OpenAI. It is capable of generating human-like text and answering a wide range of questions on various topics. As a language model, ChatGPT has been trained on a vast corpus of text data and can generate text in a variety of styles and formats.
-
-Oh, it codes too :-p   It can generate code in a variety of languages, including Python, JavaScript, Java, C#, and C++.
-
-## Contact
-
-If you have any questions or comments about this README or the video linked above, please feel free to contact me at danny.rodriguez@outlook.com

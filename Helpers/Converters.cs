@@ -9,7 +9,8 @@ namespace wingman.Helpers
 {
     public class ProgressBarValueToColorConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, string language)
+        public object Convert(object value, Type targetType, object parameter, string
+            uage)
         {
             if (value is double progress)
             {

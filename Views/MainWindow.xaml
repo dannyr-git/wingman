@@ -13,7 +13,7 @@
         RowDefinitions="35,*">
 
         <!--  App Title Bar  -->
-        <Grid x:Name="MainTitleBar">
+        <Grid x:Name="MainTitleBar" IsHitTestVisible="False">
             <Image
                 Grid.Row="0"
                 Width="40"
