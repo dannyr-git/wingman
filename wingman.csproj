@@ -7,21 +7,10 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <Platforms>x86;x64;arm64</Platforms>
     <RuntimeIdentifiers>win10-x86;win10-x64;win10-arm64</RuntimeIdentifiers>
-    <PublishProfile>win10-$(Platform).pubxml</PublishProfile>
     <UseWinUI>true</UseWinUI>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <EnablePreviewMsixTooling>false</EnablePreviewMsixTooling>
-    <Nullable>enable</Nullable>
-    <GenerateAppInstallerFile>True</GenerateAppInstallerFile>
-    <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
-    <PackageCertificateThumbprint>A5C21F38E622BFB3C6DADC49F2B385EBD303AC2C</PackageCertificateThumbprint>
-    <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
-    <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
-    <AppxPackageDir>D:\Store\OneDrive\Development\wingman.releases\</AppxPackageDir>
-    <AppxSymbolPackageEnabled>True</AppxSymbolPackageEnabled>
-    <GenerateTestArtifacts>True</GenerateTestArtifacts>
-    <AppxBundle>Never</AppxBundle>
-    <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
+    <Nullable>enable</Nullable>    
     <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
     <ApplicationIcon>wingman.ico</ApplicationIcon>
     <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
