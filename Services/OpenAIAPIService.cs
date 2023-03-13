@@ -17,9 +17,9 @@ namespace wingman.Services
     public class OpenAIAPIService : IOpenAIAPIService
     {
         private readonly IOpenAIService _openAIService;
-        private readonly ISettingsService settingsService;
+        private readonly ILocalSettings settingsService;
 
-        public OpenAIAPIService(IOpenAIService openAIService, ISettingsService settingsService)
+        public OpenAIAPIService(IOpenAIService openAIService, ILocalSettings settingsService)
         {
             _openAIService = openAIService;
             this.settingsService = settingsService;
@@ -40,7 +40,7 @@ namespace wingman.Services
             {
                 Messages = new List<ChatMessage>
                 {
-                    ChatMessage.FromSystem(settingsService.Load<string>("Wingman", "System_Preprompt")),
+                    ChatMessage.FromSystem(settingsService.Load<string>("System_Preprompt")),
                     //ChatMessage.FromSystem("You are a programming assistant.  You are only allowed to respond with the raw code.  Do not generate explanations.  Do not preface.  Do not follow-up after the code."),
                     ChatMessage.FromUser(prompt),
                 },
@@ -59,9 +59,9 @@ namespace wingman.Services
                 var maid = completionResult.Choices.First().Message.Content;
 
                 maid = PromptCleaners.CleanBlockIdentifiers(maid);
-                if (settingsService.Load<bool>("Wingman", "Trim_Whitespaces"))
+                if (settingsService.Load<bool>("Trim_Whitespaces"))
                     maid = PromptCleaners.TrimWhitespaces(maid);
-                if (settingsService.Load<bool>("Wingman", "Trim_Newlines"))
+                if (settingsService.Load<bool>("Trim_Newlines"))
                     maid = PromptCleaners.TrimNewlines(maid);
 
                 return maid;

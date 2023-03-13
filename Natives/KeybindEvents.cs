@@ -10,12 +10,12 @@ namespace wingman.Natives
     {
         private readonly INativeKeyboard nativeKeyboard;
         private readonly HookProvider hookProvider;
-        private readonly ISettingsService settingsService;
+        private readonly ILocalSettings settingsService;
         InputInjector inputInjector;
 
         public KeybindEvents(INativeKeyboard nativeKeyboard,
             HookProvider hookProvider,
-            ISettingsService settingsService
+            ILocalSettings settingsService
             )
         {
             this.nativeKeyboard = nativeKeyboard;
@@ -59,8 +59,8 @@ namespace wingman.Natives
         {
             Task<bool> task = null;
 
-            ExecuteKeybind("Main Hotkey", settingsService.Load<string>("Wingman", "Main_Hotkey"), input, OnMainHotkeyRelease, ref task);
-            ExecuteKeybind("Modal Hotkey", settingsService.Load<string>("Wingman", "Modal_Hotkey"), input, OnModalHotkeyRelease, ref task);
+            ExecuteKeybind("Main Hotkey", settingsService.Load<string>("Main_Hotkey"), input, OnMainHotkeyRelease, ref task);
+            ExecuteKeybind("Modal Hotkey", settingsService.Load<string>("Modal_Hotkey"), input, OnModalHotkeyRelease, ref task);
 
             if (task == null)
             {
@@ -82,8 +82,8 @@ namespace wingman.Natives
         {
             Task<bool> task = null;
 
-            ExecuteKeybind("Main Hotkey", settingsService.Load<string>("Wingman", "Main_Hotkey"), input, OnMainHotkey, ref task);
-            ExecuteKeybind("Modal Hotkey", settingsService.Load<string>("Wingman", "Modal_Hotkey"), input, OnModalHotkey, ref task);
+            ExecuteKeybind("Main Hotkey", settingsService.Load<string>("Main_Hotkey"), input, OnMainHotkey, ref task);
+            ExecuteKeybind("Modal Hotkey", settingsService.Load<string>("Modal_Hotkey"), input, OnModalHotkey, ref task);
 
             if (task == null)
             {

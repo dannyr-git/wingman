@@ -14,7 +14,7 @@ namespace wingman.ViewModels
 {
     public class OpenAIControlViewModel : ObservableObject
     {
-        private readonly ISettingsService _settingsService;
+        private readonly ILocalSettings _settingsService;
         private readonly IOpenAIAPIService _openAIService;
         private readonly INativeKeyboard _nativeKeyboard;
         private readonly IKeybindEvents _keybindEvents;
@@ -32,7 +32,7 @@ namespace wingman.ViewModels
         private bool _appendclipboard;
         private bool _appendclipboardmodal;
 
-        public OpenAIControlViewModel(ISettingsService settingsService, IOpenAIAPIService openAIService, INativeKeyboard nativeKeyboard, IKeybindEvents keybindEvents)
+        public OpenAIControlViewModel(ILocalSettings settingsService, IOpenAIAPIService openAIService, INativeKeyboard nativeKeyboard, IKeybindEvents keybindEvents)
         {
             _settingsService = settingsService;
             _openAIService = openAIService;
@@ -44,13 +44,13 @@ namespace wingman.ViewModels
             ApplyKeyAndRestartCommand = new RelayCommand(ExecuteApplyKeyAndRestartCommand, CanExecuteApplyKeyAndRestartCommand);
 
             Main_Hotkey_Toggled = false;
-            Api_Key = _settingsService.Load<string>("OpenAI", "ApiKey");
-            Main_Hotkey = _settingsService.Load<string>("Wingman", "Main_Hotkey");
-            Modal_Hotkey = _settingsService.Load<string>("Wingman", "Modal_Hotkey");
-            Trim_Newlines = _settingsService.Load<bool>("Wingman", "Trim_Newlines");
-            Trim_Whitespaces = _settingsService.Load<bool>("Wingman", "Trim_Whitespaces");
-            Append_Clipboard = _settingsService.Load<bool>("Wingman", "Append_Clipboard");
-            Append_Clipboard_Modal = _settingsService.Load<bool>("Wingman", "Append_Clipboard_Modal");
+            Api_Key = _settingsService.Load<string>("ApiKey");
+            Main_Hotkey = _settingsService.Load<string>("Main_Hotkey");
+            Modal_Hotkey = _settingsService.Load<string>("Modal_Hotkey");
+            Trim_Newlines = _settingsService.Load<bool>("Trim_Newlines");
+            Trim_Whitespaces = _settingsService.Load<bool>("Trim_Whitespaces");
+            Append_Clipboard = _settingsService.Load<bool>("Append_Clipboard");
+            Append_Clipboard_Modal = _settingsService.Load<bool>("Append_Clipboard_Modal");
         }
 
         public bool Append_Clipboard_Modal
@@ -58,7 +58,7 @@ namespace wingman.ViewModels
             get => _appendclipboardmodal;
             set
             {
-                _settingsService.Save<bool>("Wingman", "Append_Clipboard_Modal", value);
+                _settingsService.Save<bool>("Append_Clipboard_Modal", value);
                 SetProperty(ref _appendclipboardmodal, value);
             }
         }
@@ -68,7 +68,7 @@ namespace wingman.ViewModels
             get => _appendclipboard;
             set
             {
-                _settingsService.Save<bool>("Wingman", "Append_Clipboard", value);
+                _settingsService.Save<bool>("Append_Clipboard", value);
                 SetProperty(ref _appendclipboard, value);
             }
         }
@@ -78,7 +78,7 @@ namespace wingman.ViewModels
             get => _trimwhitespaces;
             set
             {
-                _settingsService.Save<bool>("Wingman", "Trim_Whitespaces", value);
+                _settingsService.Save<bool>("Trim_Whitespaces", value);
                 SetProperty(ref _trimwhitespaces, value);
             }
         }
@@ -88,7 +88,7 @@ namespace wingman.ViewModels
             get => _trimnewlines;
             set
             {
-                _settingsService.Save<bool>("Wingman", "Trim_Newlines", value);
+                _settingsService.Save<bool>("Trim_Newlines", value);
                 SetProperty(ref _trimnewlines, value);
             }
         }
@@ -98,7 +98,7 @@ namespace wingman.ViewModels
             get => _mainhotkey;
             set
             {
-                _settingsService.Save("Wingman", "Main_Hotkey", value);  // TODO; actually manage hotkey key,value pair relationships
+                _settingsService.Save("Main_Hotkey", value);  // TODO; actually manage hotkey key,value pair relationships
                 SetProperty(ref _mainhotkey, value);
             }
         }
@@ -108,7 +108,7 @@ namespace wingman.ViewModels
             get => _modalhotkey;
             set
             {
-                _settingsService.Save("Wingman", "Modal_Hotkey", value);
+                _settingsService.Save("Modal_Hotkey", value);
                 SetProperty(ref _modalhotkey, value);
             }
         }
@@ -225,7 +225,7 @@ namespace wingman.ViewModels
             set
             {
                 SetProperty(ref _apikey, value);
-                _settingsService.TrySave("OpenAI", "ApiKey", value);
+                _settingsService.TrySave("ApiKey", value);
                 IsEnabled = CanExecuteApplyKeyAndRestartCommand();
             }
         }

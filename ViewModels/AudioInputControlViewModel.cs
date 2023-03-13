@@ -17,7 +17,7 @@ namespace wingman.ViewModels
     public class AudioInputControlViewModel : ObservableObject, IDisposable
     {
         private readonly IMicrophoneDeviceService _microphoneDeviceService;
-        private readonly ISettingsService _settingsService;
+        private readonly ILocalSettings _settingsService;
 
         private List<MicrophoneDevice> _micDevices;
         private CoreDispatcher _dispatcher;
@@ -33,7 +33,7 @@ namespace wingman.ViewModels
         private bool _disposed = false;
         private bool _disposing = false;
 
-        public AudioInputControlViewModel(IMicrophoneDeviceService microphoneDeviceService, ISettingsService settingsService)
+        public AudioInputControlViewModel(IMicrophoneDeviceService microphoneDeviceService, ILocalSettings settingsService)
         {
             _microphoneDeviceService = microphoneDeviceService;
             _settingsService = settingsService;

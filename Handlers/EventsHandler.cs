@@ -20,7 +20,7 @@ namespace wingman.Handlers
         private readonly IMicrophoneDeviceService micService;
         private readonly IOpenAIAPIService chatGPTService;
         private readonly IStdInService stdInService;
-        private readonly ISettingsService settingsService;
+        private readonly ILocalSettings settingsService;
         private readonly MediaPlayer mediaPlayer;
         private readonly ConcurrentBag<ModalWindow> openWindows = new ConcurrentBag<ModalWindow>();
         private readonly Stopwatch stopwatch = new Stopwatch();
@@ -29,7 +29,7 @@ namespace wingman.Handlers
 
         public EventHandler<bool> InferenceCallback;
 
-        public EventsHandler(IKeybindEvents events, IMicrophoneDeviceService micService, IOpenAIAPIService chatGPTService, IStdInService stdInService, ISettingsService settingsService)
+        public EventsHandler(IKeybindEvents events, IMicrophoneDeviceService micService, IOpenAIAPIService chatGPTService, IStdInService stdInService, ILocalSettings settingsService)
         {
             this.events = events;
             this.micService = micService;
@@ -164,7 +164,7 @@ namespace wingman.Handlers
 
             string? cbstr = "";
 
-            if (settingsService.Load<bool>("Wingman", "Append_Clipboard"))
+            if (settingsService.Load<bool>("Append_Clipboard"))
             {
                 cbstr = await ClipboardHelper.GetTextAsync();
                 if (!String.IsNullOrEmpty(cbstr))
@@ -234,7 +234,7 @@ namespace wingman.Handlers
         private readonly IMicrophoneDeviceService micService;
         private readonly IOpenAIAPIService chatGPTService;
         private readonly IStdInService stdInService;
-        private readonly ISettingsService settingsService;
+        private readonly ILocalSettings settingsService;
 
         public EventHandler<bool> InferenceCallback;
 
@@ -262,7 +262,7 @@ namespace wingman.Handlers
             IMicrophoneDeviceService micService,
             IOpenAIAPIService chatGPTService,
             IStdInService stdInService,
-            ISettingsService settingsService
+            ILocalSettings settingsService
             )
         {
             this.events = events;
@@ -364,7 +364,7 @@ namespace wingman.Handlers
             MouseWait();
             var prompt = await chatGPTService.GetWhisperResponse(file);
             // check settings for Append_Clipboard and if its true, append the clipboard to the prompt
-            if (settingsService.Load<bool>("Wingman", "Append_Clipboard"))
+            if (settingsService.Load<bool>("Append_Clipboard"))
             {
                 var text = await ClipboardHelper.GetTextAsync();
                 if (!string.IsNullOrEmpty(text))
@@ -439,7 +439,7 @@ namespace wingman.Handlers
             var prompt = await chatGPTService.GetWhisperResponse(file);
 
             // check settings for Append_Clipboard_Modal and if its true, append the clipboard to the prompt
-            if (settingsService.Load<bool>("Wingman", "Append_Clipboard_Modal"))
+            if (settingsService.Load<bool>("Append_Clipboard_Modal"))
             {
                 var text = await ClipboardHelper.GetTextAsync();
                 if (!string.IsNullOrEmpty(text))

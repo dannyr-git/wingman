@@ -40,6 +40,9 @@ namespace wingman.Services
 
             var devices = await DeviceInformation.FindAllAsync(DeviceClass.AudioCapture);
 
+            if (devices == null || devices.Count == 0)
+                return result;
+
             foreach (var device in devices)
             {
                 result.Add(new MicrophoneDevice

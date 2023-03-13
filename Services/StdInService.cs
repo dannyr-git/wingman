@@ -34,7 +34,7 @@ namespace wingman.Services
             _process = process ?? throw new ArgumentNullException(nameof(process));
         }
 
-        //ISettingsService settingsService;
+        //ILocalSettings settingsService;
 
         public StdInService()
         {

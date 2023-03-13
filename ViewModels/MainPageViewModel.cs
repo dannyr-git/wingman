@@ -14,7 +14,7 @@ namespace wingman.ViewModels
     {
         private readonly IEditorService _editorService;
         private readonly IStdInService _stdinService;
-        private readonly ISettingsService _settingsService;
+        private readonly ILocalSettings _settingsService;
 
         private List<string> _stdInTargetOptions = new List<string>();
         private List<Process> _runningProcesses;
@@ -23,14 +23,14 @@ namespace wingman.ViewModels
         private string _selectedStdInTarget;
         private string _preprompt;
 
-        public MainPageViewModel(IEditorService editorService, IStdInService stdinService, ISettingsService settingsService)
+        public MainPageViewModel(IEditorService editorService, IStdInService stdinService, ILocalSettings settingsService)
         {
             _editorService = editorService;
             _stdinService = stdinService;
 
             InitializeStdInTargetOptions();
             _settingsService = settingsService;
-            PrePrompt = _settingsService.Load<string>("Wingman", "System_Preprompt");
+            PrePrompt = _settingsService.Load<string>("System_Preprompt");
         }
 
         public string PrePrompt
@@ -39,7 +39,7 @@ namespace wingman.ViewModels
             set
             {
                 SetProperty(ref _preprompt, value);
-                _settingsService.Save<string>("Wingman", "System_Preprompt", value);
+                _settingsService.Save<string>("System_Preprompt", value);
             }
         }
 

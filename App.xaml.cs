@@ -54,12 +54,12 @@ namespace wingman
                         .AddSingleton<IMicrophoneDeviceService, MicrophoneDeviceService>()
                         .AddSingleton<IEditorService, EditorService>()
                         .AddSingleton<IStdInService, StdInService>()
-                        .AddSingleton<ISettingsService, LocalSettingsService>()
+                        .AddSingleton<ILocalSettings, LocalSettingsService>()
                         .AddSingleton<IAppActivationService, AppActivationService>()
                         .AddOpenAIService(settings =>
                         {
-                            var settingsService = services.BuildServiceProvider().GetService<ISettingsService>();
-                            if (settingsService?.TryLoad<string>("OpenAI", "ApiKey", out var apiKey) ?? false)
+                            var settingsService = services.BuildServiceProvider().GetService<ILocalSettings>();
+                            if (settingsService?.TryLoad<string>("ApiKey", out var apiKey) ?? false)
                             {
                                 settings.ApiKey = apiKey;
                             }

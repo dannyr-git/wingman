@@ -10,7 +10,7 @@
     <PublishProfile>win10-$(Platform).pubxml</PublishProfile>
     <UseWinUI>true</UseWinUI>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <EnablePreviewMsixTooling>true</EnablePreviewMsixTooling>
+    <EnablePreviewMsixTooling>false</EnablePreviewMsixTooling>
     <Nullable>enable</Nullable>
     <GenerateAppInstallerFile>True</GenerateAppInstallerFile>
     <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
@@ -22,12 +22,12 @@
     <GenerateTestArtifacts>True</GenerateTestArtifacts>
     <AppxBundle>Never</AppxBundle>
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
-    <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
-    <!-- <GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
-    <WindowsPackageType>None</WindowsPackageType>-->
     <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
+    <ApplicationIcon>wingman.ico</ApplicationIcon>
+    <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
+    <WindowsPackageType>None</WindowsPackageType>
   </PropertyGroup>
-  
+
   <ItemGroup>
     <PackageReference Include="Betalgo.OpenAI.GPT3" Version="6.7.3" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.1.0" />
