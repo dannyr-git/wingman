@@ -1,12 +1,10 @@
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.Windows.AppLifecycle;
 using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Windows.ApplicationModel.Core;
 using wingman.Interfaces;
 using wingman.Natives;
 
@@ -38,10 +36,6 @@ namespace wingman.ViewModels
             _openAIService = openAIService;
             _nativeKeyboard = nativeKeyboard;
             _keybindEvents = keybindEvents;
-
-            SaveButtonEnabled = true;
-            IsEnabled = CanExecuteApplyKeyAndRestartCommand();
-            ApplyKeyAndRestartCommand = new RelayCommand(ExecuteApplyKeyAndRestartCommand, CanExecuteApplyKeyAndRestartCommand);
 
             Main_Hotkey_Toggled = false;
             Api_Key = _settingsService.Load<string>("ApiKey");
@@ -168,37 +162,9 @@ namespace wingman.ViewModels
         }
 
 
-        public bool SaveButtonEnabled
+        public bool IsValidKey()
         {
-            get => _saveButtonEnabled;
-            set
-            {
-                if (SetProperty(ref _saveButtonEnabled, value))
-                {
-
-                }
-            }
-        }
-
-        private async void ExecuteApplyKeyAndRestartCommand()
-        {
-            AppRestartFailureReason restartError = AppInstance.Restart("");
-
-            switch (restartError)
-            {
-                case AppRestartFailureReason.RestartPending:
-                    //SendToast("Another restart is currently pending.");
-                    break;
-                case AppRestartFailureReason.InvalidUser:
-                    //SendToast("Current user is not signed in or not a valid user.");
-                    break;
-                case AppRestartFailureReason.Other:
-                    //SendToast("Failure restarting.");
-                    break;
-            }
-
-            // Close the application
-            Application.Current.Exit();
+            return _isvalidkey;
         }
 
         bool _isvalidkey;
@@ -208,15 +174,26 @@ namespace wingman.ViewModels
             set
             {
                 SetProperty(ref _isvalidkey, value);
-                OnPropertyChanged(nameof(ApplyKeyAndRestartCommand));
             }
         }
 
-        private bool CanExecuteApplyKeyAndRestartCommand()
+        private bool IsApiKeyValid()
         {
-            if (_apikey == null || !_apikey.StartsWith("sk-") || _apikey.Length != 51)
+            if (String.IsNullOrEmpty(_apikey) || !_apikey.StartsWith("sk-") || _apikey.Length != 51)
                 return false;
             return true;
+        }
+
+        private string _apikeymessage;
+        public string ApiKeymessage
+        {
+            get
+            {
+                if (IsApiKeyValid())
+                    return "Valid API Key";
+                else
+                    return "Invalid API Key";
+            }
         }
 
         public string Api_Key
@@ -225,8 +202,19 @@ namespace wingman.ViewModels
             set
             {
                 SetProperty(ref _apikey, value);
-                _settingsService.TrySave("ApiKey", value);
-                IsEnabled = CanExecuteApplyKeyAndRestartCommand();
+                if (!IsApiKeyValid())
+                {
+                    _apikey = "You must enter a valid OpenAI API Key.";
+                    IsEnabled = IsApiKeyValid();
+                    OnPropertyChanged(nameof(Api_Key));
+                }
+                else
+                {
+                    _settingsService.TrySave("ApiKey", value);
+                    IsEnabled = IsApiKeyValid();
+                    Ioc.Default.GetRequiredService<IOpenAIAPIService>();
+                }
+                OnPropertyChanged(nameof(ApiKeymessage));
             }
         }
     }

@@ -10,6 +10,7 @@ using wingman.Helpers;
 using wingman.Interfaces;
 using wingman.Natives;
 using wingman.Natives.Helpers;
+using wingman.ViewModels;
 using wingman.Views;
 
 namespace wingman.Handlers
@@ -21,6 +22,7 @@ namespace wingman.Handlers
         private readonly IOpenAIAPIService chatGPTService;
         private readonly IStdInService stdInService;
         private readonly ILocalSettings settingsService;
+        private readonly OpenAIControlViewModel openAIControlViewModel;
         private readonly MediaPlayer mediaPlayer;
         private readonly ConcurrentBag<ModalWindow> openWindows = new ConcurrentBag<ModalWindow>();
         private readonly Stopwatch stopwatch = new Stopwatch();
@@ -29,7 +31,7 @@ namespace wingman.Handlers
 
         public EventHandler<bool> InferenceCallback;
 
-        public EventsHandler(IKeybindEvents events, IMicrophoneDeviceService micService, IOpenAIAPIService chatGPTService, IStdInService stdInService, ILocalSettings settingsService)
+        public EventsHandler(OpenAIControlViewModel openAIControlViewModel, IKeybindEvents events, IMicrophoneDeviceService micService, IOpenAIAPIService chatGPTService, IStdInService stdInService, ILocalSettings settingsService)
         {
             this.events = events;
             this.micService = micService;
@@ -37,6 +39,7 @@ namespace wingman.Handlers
             this.stdInService = stdInService;
             this.settingsService = settingsService;
             this.mediaPlayer = new MediaPlayer();
+            this.openAIControlViewModel = openAIControlViewModel;
 
             Initialize();
         }
@@ -115,7 +118,7 @@ namespace wingman.Handlers
 
         private async Task<bool> HandleHotkey(Func<Task<bool>> action)
         {
-            if (isDisposed)
+            if (isDisposed || !openAIControlViewModel.IsValidKey())
             {
                 return await Task.FromResult(false);
             }

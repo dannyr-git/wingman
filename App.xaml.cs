@@ -2,7 +2,6 @@ using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.UI.Xaml;
-using OpenAI.GPT3.Extensions;
 using System;
 using wingman.Handlers;
 using wingman.Interfaces;
@@ -41,8 +40,6 @@ namespace wingman
             appWindowService.Activate(args);
         }
 
-
-
         private static IHost BuildHost() => Host.CreateDefaultBuilder()
                 .ConfigureServices((context, services) =>
                 {
@@ -56,17 +53,7 @@ namespace wingman
                         .AddSingleton<IStdInService, StdInService>()
                         .AddSingleton<ILocalSettings, LocalSettingsService>()
                         .AddSingleton<IAppActivationService, AppActivationService>()
-                        .AddOpenAIService(settings =>
-                        {
-                            var settingsService = services.BuildServiceProvider().GetService<ILocalSettings>();
-                            if (settingsService?.TryLoad<string>("ApiKey", out var apiKey) ?? false)
-                            {
-                                settings.ApiKey = apiKey;
-                            }
-                            //settings.Organization = "Put your organization here";
-                            //this is for people who are a part of multiple organizations only, not implementing for now
-                        })
-                        .AddSingleton<IOpenAIAPIService, OpenAIAPIService>()
+                        .AddTransient<IOpenAIAPIService, OpenAIAPIService>()
                         .AddSingleton<AudioInputControlViewModel>()
                         .AddSingleton<OpenAIControlViewModel>()
                         .AddSingleton<MainWindowViewModel>()

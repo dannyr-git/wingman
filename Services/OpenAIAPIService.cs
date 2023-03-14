@@ -1,4 +1,6 @@
-﻿using OpenAI.GPT3.Interfaces;
+﻿using OpenAI.GPT3;
+using OpenAI.GPT3.Interfaces;
+using OpenAI.GPT3.Managers;
 using OpenAI.GPT3.ObjectModels;
 using OpenAI.GPT3.ObjectModels.RequestModels;
 using System;
@@ -18,15 +20,37 @@ namespace wingman.Services
     {
         private readonly IOpenAIService _openAIService;
         private readonly ILocalSettings settingsService;
+        private string _apikey;
 
-        public OpenAIAPIService(IOpenAIService openAIService, ILocalSettings settingsService)
+        public OpenAIAPIService(ILocalSettings settingsService)
         {
-            _openAIService = openAIService;
             this.settingsService = settingsService;
+            _apikey = settingsService.Load<string>("ApiKey");
+
+            if (String.IsNullOrEmpty(_apikey))
+            {
+                _apikey = "Api Key Is Null or Empty";
+                //throw new Exception($"Settings \"ApiKey\" is null.");
+            }
+
+            _openAIService = new OpenAIService(new OpenAiOptions()
+            {
+                ApiKey =  _apikey
+            });
+        }
+
+        private async Task<bool> IsApiKeyValid()
+        {
+            if (String.IsNullOrEmpty(_apikey) || !_apikey.StartsWith("sk-") || _apikey.Length != 51)
+                return false;
+            return true;
         }
 
         public async Task<string> GetResponse(string prompt)
         {
+            if (!await IsApiKeyValid())
+                return "Invalid API Key.  Please check your settings.";
+
             // Future support for CodeDavinci ... it is in beta, and seems to be disabled right now
             /*
             var completionResult = await _openAIService.Completions.CreateCompletion(new CompletionCreateRequest
@@ -98,6 +122,7 @@ namespace wingman.Services
 
         public async Task<string> GetWhisperResponse(StorageFile inmp3)
         {
+
             var fileBytes = await ReadFileBytes(inmp3);
 
             var completionResult = await _openAIService.Audio.CreateTranscription(new AudioCreateTranscriptionRequest
