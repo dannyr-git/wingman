@@ -73,7 +73,8 @@ namespace wingman.Helpers
                 {
                     FontFamily = new FontFamily("Segoe MDL2 Assets"),
                     FontSize = 15,
-                    Glyph = "\uE73A"
+                    Foreground = new SolidColorBrush(Colors.Green),
+                    Glyph = "\uF78C"
                 };
             }
             else
@@ -82,7 +83,8 @@ namespace wingman.Helpers
                 {
                     FontFamily = new FontFamily("Segoe MDL2 Assets"),
                     FontSize = 15,
-                    Glyph = "\uE739"
+                    Foreground = new SolidColorBrush(Colors.Red),
+                    Glyph = "\uF78A"
                 };
             }
         }

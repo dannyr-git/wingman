@@ -190,9 +190,9 @@ namespace wingman.ViewModels
             get
             {
                 if (IsApiKeyValid())
-                    return "Valid API Key";
+                    return "Key format valid.";
                 else
-                    return "Invalid API Key";
+                    return "Invalid key format.";
             }
         }
 
