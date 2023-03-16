@@ -151,6 +151,7 @@ namespace wingman.Handlers
                     throw new Exception("File is null");
                 }
 
+                // >>> START: THIS SHOULD BE IN ANOTHER THREAD, RIGHT?
                 Logger.LogDebug("Send recording to Whisper API");
                 var prompt = await chatGPTService.GetWhisperResponse(file);
                 Logger.LogDebug("WhisperAPI Prompt Received: " + prompt);
@@ -199,6 +200,7 @@ namespace wingman.Handlers
                 }
 
                 await action(response);
+                // >>> STOP: THIS SHOULD BE IN ANOTHER THREAD, RIGHT?
             }
             catch (Exception e)
             {

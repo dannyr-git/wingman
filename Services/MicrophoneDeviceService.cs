@@ -360,6 +360,7 @@ namespace wingman.Services
                 }
                 _audioFileOutputNode.Stop();
                 await _audioFileOutputNode.FinalizeAsync();
+                _audioFileOutputNode = null;
                 Logger.LogDebug("Audio output node finalized.");
 
                 _isRecording = false;

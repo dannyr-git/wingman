@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
@@ -8,88 +9,129 @@ namespace wingman.Natives.Helpers
 {
     public static class ClipboardHelper
     {
+        private static readonly SemaphoreSlim ClipboardSemaphore = new SemaphoreSlim(1, 1);
 
-        public static void SetText(string? value)
+        public static async Task SetTextAsync(string? value)
         {
             if (!string.IsNullOrWhiteSpace(value))
             {
+                await ClipboardSemaphore.WaitAsync();
+                try
+                {
+                    var data = new DataPackage
+                    {
+                        RequestedOperation = DataPackageOperation.Copy
+                    };
+                    data.SetText(value);
+                    Clipboard.SetContent(data);
+                    Clipboard.Flush();
+                }
+                finally
+                {
+                    ClipboardSemaphore.Release();
+                }
+            }
+        }
+
+        public static async Task SetBitmapAsync(IRandomAccessStream stream)
+        {
+            await ClipboardSemaphore.WaitAsync();
+            try
+            {
+                var value = RandomAccessStreamReference.CreateFromStream(stream);
                 var data = new DataPackage
                 {
                     RequestedOperation = DataPackageOperation.Copy
                 };
-                data.SetText(value);
+                data.SetBitmap(value);
                 Clipboard.SetContent(data);
                 Clipboard.Flush();
             }
-        }
-
-
-        public static void SetBitmap(IRandomAccessStream stream)
-        {
-            var value = RandomAccessStreamReference.CreateFromStream(stream);
-            var data = new DataPackage
+            finally
             {
-                RequestedOperation = DataPackageOperation.Copy
-            };
-            data.SetBitmap(value);
-            Clipboard.SetContent(data);
-            Clipboard.Flush();
+                ClipboardSemaphore.Release();
+            }
         }
 
-
-        public static void SetBitmap(IStorageFile file)
+        public static async Task SetBitmapAsync(IStorageFile file)
         {
-            var value = RandomAccessStreamReference.CreateFromFile(file);
-            var data = new DataPackage
+            await ClipboardSemaphore.WaitAsync();
+            try
             {
-                RequestedOperation = DataPackageOperation.Copy
-            };
-            data.SetBitmap(value);
-            Clipboard.SetContent(data);
-            Clipboard.Flush();
+                var value = RandomAccessStreamReference.CreateFromFile(file);
+                var data = new DataPackage
+                {
+                    RequestedOperation = DataPackageOperation.Copy
+                };
+                data.SetBitmap(value);
+                Clipboard.SetContent(data);
+                Clipboard.Flush();
+            }
+            finally
+            {
+                ClipboardSemaphore.Release();
+            }
         }
 
-
-        public static void SetBitmap(Uri uri)
+        public static async Task SetBitmapAsync(Uri uri)
         {
-            var value = RandomAccessStreamReference.CreateFromUri(uri);
-            var data = new DataPackage
+            await ClipboardSemaphore.WaitAsync();
+            try
             {
-                RequestedOperation = DataPackageOperation.Copy
-            };
-            data.SetBitmap(value);
-            Clipboard.SetContent(data);
-            Clipboard.Flush();
+                var value = RandomAccessStreamReference.CreateFromUri(uri);
+                var data = new DataPackage
+                {
+                    RequestedOperation = DataPackageOperation.Copy
+                };
+                data.SetBitmap(value);
+                Clipboard.SetContent(data);
+                Clipboard.Flush();
+            }
+            finally
+            {
+                ClipboardSemaphore.Release();
+            }
         }
 
-
-
-        public static void SetStorageItems(DataPackageOperation operation, params IStorageItem[] items)
+        public static async Task SetStorageItemsAsync(DataPackageOperation operation, params IStorageItem[] items)
         {
-            var data = new DataPackage
+            await ClipboardSemaphore.WaitAsync();
+            try
             {
-                RequestedOperation = operation,
-            };
-            data.SetStorageItems(items);
-            Clipboard.SetContent(data);
-            Clipboard.Flush();
+                var data = new DataPackage
+                {
+                    RequestedOperation = operation,
+                };
+                data.SetStorageItems(items);
+                Clipboard.SetContent(data);
+                Clipboard.Flush();
+            }
+            finally
+            {
+                ClipboardSemaphore.Release();
+            }
         }
-
-
 
         public static async Task<string?> GetTextAsync()
         {
-            var data = Clipboard.GetContent();
-            if (data.Contains(StandardDataFormats.Text))
+            await ClipboardSemaphore.WaitAsync();
+            try
             {
-                return await data.GetTextAsync();
+                var data = Clipboard.GetContent();
+                if (data.Contains(StandardDataFormats.Text))
+                {
+                    return await data.GetTextAsync();
+                }
+                else
+                {
+                    return null;
+                }
             }
-            else
+            finally
             {
-                return null;
+                ClipboardSemaphore.Release();
             }
         }
-
-
     }
+
 }
