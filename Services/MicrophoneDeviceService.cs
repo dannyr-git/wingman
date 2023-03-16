@@ -30,9 +30,16 @@ namespace wingman.Services
         private bool _isRecording = false;
         private AudioBuffer? _recBuffer;
         private AudioFileOutputNode? _audioFileOutputNode;
+        private bool _disposed = false;
         private bool _disposing = false;
-
         private ulong _sampleRate;
+
+        ILoggingService Logger;
+
+        public MicrophoneDeviceService(ILoggingService logger)
+        {
+            Logger = logger;
+        }
 
         public async Task<IReadOnlyList<MicrophoneDevice>> GetMicrophoneDevicesAsync()
         {
@@ -58,47 +65,52 @@ namespace wingman.Services
 
         protected virtual void Dispose(bool disposing)
         {
-            if (disposing)
+            if (!_disposed)
             {
-                _isRecording = false;
+                if (disposing)
+                {
+                    _isRecording = false;
 
-                if (_audioFileOutputNode != null) // this wont ever be true
-                {
-                    _audioFileOutputNode.Stop();
-                    _audioFileOutputNode.Dispose();
-                    _audioFileOutputNode = null;
-                }
+                    if (_audioFileOutputNode != null) // this wont ever be true
+                    {
+                        _audioFileOutputNode.Stop();
+                        _audioFileOutputNode.Dispose();
+                        _audioFileOutputNode = null;
+                    }
 
-                if (graph != null)
-                {
-                    if (_frameOutputNode != null)
+                    if (graph != null)
                     {
-                        _frameOutputNode.Stop();
-                        graph.QuantumStarted -= FrameOutputNode_QuantumStarted;
-                        _frameOutputNode.Dispose();
-                        _frameOutputNode = null;
+                        if (_frameOutputNode != null)
+                        {
+                            _frameOutputNode.Stop();
+                            graph.QuantumStarted -= FrameOutputNode_QuantumStarted;
+                            _frameOutputNode.Dispose();
+                            _frameOutputNode = null;
+                        }
+                        if (_frameInputNode != null)
+                        {
+                            _frameInputNode.Stop();
+                            _frameInputNode.Dispose();
+                            _frameInputNode = null;
+                        }
+                        if (_deviceInputNode != null)
+                        {
+                            _deviceInputNode.Stop();
+                            _deviceInputNode.Dispose();
+                            _deviceInputNode = null;
+                        }
+                        graph.UnrecoverableErrorOccurred -= AudioGraph_UnrecoverableErrorOccurred;
+                        graph.Stop();
+                        graph.Dispose();
+                        graph = null;
                     }
-                    if (_frameInputNode != null)
+                    if (_recBuffer != null)
                     {
-                        _frameInputNode.Stop();
-                        _frameInputNode.Dispose();
-                        _frameInputNode = null;
+                        _recBuffer.Dispose();
+                        _recBuffer = null;
                     }
-                    if (_deviceInputNode != null)
-                    {
-                        _deviceInputNode.Stop();
-                        _deviceInputNode.Dispose();
-                        _deviceInputNode = null;
-                    }
-                    graph.UnrecoverableErrorOccurred -= AudioGraph_UnrecoverableErrorOccurred;
-                    graph.Stop();
-                    graph.Dispose();
-                    graph = null;
-                }
-                if (_recBuffer != null)
-                {
-                    _recBuffer.Dispose();
-                    _recBuffer = null;
+                    _disposed = true;
+                    Debug.WriteLine("Microphone Devices disposed");
                 }
             }
         }
@@ -109,6 +121,7 @@ namespace wingman.Services
             _disposing = true;
             Dispose(_disposing);
             GC.SuppressFinalize(this);
+            Debug.WriteLine("MicrophoneDeviceService disposed");
         }
 
 
@@ -116,7 +129,7 @@ namespace wingman.Services
         {
             if (sender == graph && args.Error != AudioGraphUnrecoverableError.None)
             {
-                Debug.WriteLine("The audio graph encountered and unrecoverable error.");
+                Logger.LogDebug("The audio graph encountered and unrecoverable error.");
                 graph.Stop();
                 graph.Dispose();
             }
@@ -125,6 +138,7 @@ namespace wingman.Services
         public async Task SetMicrophoneDeviceAsync(MicrophoneDevice device)
         {
             Dispose(true);
+            _disposed = false;
 
             if (device != null)
             {
@@ -145,7 +159,7 @@ namespace wingman.Services
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"An error occurred: {ex.Message}");
+                    Debug.WriteLine($"An error occurred: {ex.Message}");
                 }
 
 
@@ -182,6 +196,7 @@ namespace wingman.Services
                 graph.QuantumStarted += FrameOutputNode_QuantumStarted;
 
                 graph.Start();
+                Logger.LogDebug("Graph started.");
             }
         }
 
@@ -295,7 +310,7 @@ namespace wingman.Services
             _deviceInputNode.AddOutgoingConnection(_audioFileOutputNode);
 
 
-
+            Logger.LogDebug("Temporary Audio File created");
             return sampleFile;
         }
 
@@ -303,19 +318,31 @@ namespace wingman.Services
 
         public async Task StartRecording()
         {
-            if (_isRecording || _currentMicrophoneDevice == null || graph == null)
+            try
             {
-                return;
+                if (_isRecording || _currentMicrophoneDevice == null || graph == null)
+                {
+                    return;
+                }
+                _isRecording = true;
+                graph.Stop();
+                tmpFile = await CreateTempFileOutputNode();
+                graph.Start();
+
+                if (_audioFileOutputNode == null)
+                {
+                    throw new Exception("_audioFileOutputNode is null.");
+                }
+                _audioFileOutputNode.Start();
+                Logger.LogDebug("Audio recording to file started: " + tmpFile.Name);
             }
-            _isRecording = true;
-            graph.Stop();
-            tmpFile = await CreateTempFileOutputNode();
-            graph.Start();
-            if (_audioFileOutputNode == null)
+            catch (Exception)
             {
-                throw new Exception("_audioFileOutputNode is null.");
+                Logger.LogException("Error starting audio recording to file.");
+                // Log or handle exceptions that occur during StartRecording
+                _isRecording = false;
+                throw; // Re-throw the exception if needed or handle it accordingly
             }
-            _audioFileOutputNode.Start();
         }
 
         public async Task<StorageFile?> StopRecording()
@@ -324,17 +351,29 @@ namespace wingman.Services
             {
                 return default(StorageFile);
             }
-
-            if (_audioFileOutputNode == null)
+            try
             {
-                throw new Exception("_audioFileOutputNode is null.");
-            }
-            _audioFileOutputNode.Stop();
-            await _audioFileOutputNode.FinalizeAsync();
+                if (_audioFileOutputNode == null)
+                {
+                    Logger.LogException("_audioFileOutputNode is null.");
+                    throw new Exception("_audioFileOutputNode is null.");
+                }
+                _audioFileOutputNode.Stop();
+                await _audioFileOutputNode.FinalizeAsync();
+                Logger.LogDebug("Audio output node finalized.");
 
-            _isRecording = false;
-            return tmpFile;
+                _isRecording = false;
+                return tmpFile;
+            }
+            catch (Exception)
+            {
+                Logger.LogException("Error stopping audio recording to file.");
+                // Log or handle exceptions that occur during StopRecording
+                _isRecording = false;
+                throw; // Re-throw the exception if needed or handle it accordingly
+            }
         }
+
     }
 }
 

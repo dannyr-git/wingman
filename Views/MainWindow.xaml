@@ -9,7 +9,7 @@
 
     <views:GridExposeCursor
         x:Name="MainGrid"
-        Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+        Background="{ThemeResource SystemAltMediumLowColor}"
         RowDefinitions="35,*">
 
         <!--  App Title Bar  -->
@@ -35,9 +35,7 @@
                 TextWrapping="NoWrap" />
         </Grid>
 
-        <views:MainPage Grid.Row="1" />
-
-        <Button x:Name="ThisIsStupid" Visibility="Collapsed" />
+        <views:MainPage Grid.Row="1" Margin="0,10,0,0" />
 
     </views:GridExposeCursor>
 

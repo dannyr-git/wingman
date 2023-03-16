@@ -5,7 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:views="using:wingman.Views"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    Background="{ThemeResource SystemAltMediumLowColor}"
     Style="{StaticResource CommonPageStyle}"
     mc:Ignorable="d">
 
@@ -18,6 +18,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="10" />
         </Grid.RowDefinitions>
 
         <StackPanel Grid.Row="0" Orientation="Horizontal">
@@ -36,33 +37,11 @@
                 TextWrapping="Wrap" />
         </StackPanel>
 
-        <!--
-        <StackPanel
-            Grid.Row="0"
-            Margin="16,32,16,0"
-            Orientation="Horizontal">
-            <Button Command="{x:Bind ViewModel.ActivateChatGPT}" Content="CLICK ME!" />
-            <TextBlock
-                Width="200"
-                Margin="0,0,8,0"
-                Text="Choose stdin target:" />
-            <ComboBox
-                x:Name="stdinTargetComboBox"
-                Width="200"
-                Margin="0"
-                ItemsSource="{x:Bind ViewModel.StdInTargetOptions}"
-                PlaceholderText="Select an option..."
-                SelectedItem="{x:Bind ViewModel.SelectedStdInTarget, Mode=TwoWay}" />
-        </StackPanel>
-        -->
-
-
         <!--  Audio Dropdown + Slider Configs + Volume Progressbar  -->
         <Border
             x:Name="Test"
             Grid.Row="1"
             Margin="1,5,0,0"
-            BorderBrush="White"
             BorderThickness="1">
             <views:AudioInputControl Margin="3" />
         </Border>
@@ -70,13 +49,11 @@
         <Border
             Grid.Row="1"
             Margin="0,0,0,0"
-            BorderBrush="#E3E3E3"
             BorderThickness="1,1,1,1" />
 
         <Border
             Grid.Row="2"
             Margin="1,5,0,0"
-            BorderBrush="White"
             BorderThickness="1">
             <views:OpenAIControl Margin="3" />
         </Border>
@@ -84,17 +61,19 @@
         <Border
             Grid.Row="1"
             Margin="0,0,0,0"
-            BorderBrush="#E3E3E3"
             BorderThickness="1,1,1,1" />
-
-        <Image
-            x:Name="PrimaryLogo"
-            Grid.Row="6"
+        <!--
             Width="250"
             Height="186"
-            VerticalAlignment="Center"
-            Source="../Assets/wingman.png"
-            Stretch="Uniform" />
+        -->
+
+        <Border
+            Grid.Row="6"
+            Margin="2"
+            VerticalAlignment="Bottom"
+            BorderThickness="1">
+            <views:Footer Margin="1" />
+        </Border>
 
 
     </Grid>

@@ -24,6 +24,7 @@ namespace wingman.Views
     {
         public EventsHandler eventsHandler;
         private DispatcherQueue _dispatcherQueue;
+        private App _app;
 
         public MainWindow(EventsHandler eventsHandler)
         {
@@ -42,6 +43,13 @@ namespace wingman.Views
             this.SetIsResizable(false);
 
             this.Closed += OnClosed;
+
+            _app = null;
+        }
+
+        public void SetApp(App app)
+        {
+            this._app = app;
         }
 
         public MainWindowViewModel ViewModel { get; }
@@ -53,6 +61,9 @@ namespace wingman.Views
 
             // Remove the event handler for the Closed event
             ((Window)sender).Closed -= OnClosed;
+
+            if (_app != null)
+                _app.Dispose();
         }
 
         private async void HandleInferenceAsync(object sender, bool result)

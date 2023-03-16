@@ -15,6 +15,7 @@ namespace wingman.ViewModels
         private readonly IEditorService _editorService;
         private readonly IStdInService _stdinService;
         private readonly ILocalSettings _settingsService;
+        private readonly ILoggingService _loggingService;
 
         private List<string> _stdInTargetOptions = new List<string>();
         private List<Process> _runningProcesses;
@@ -23,10 +24,11 @@ namespace wingman.ViewModels
         private string _selectedStdInTarget;
         private string _preprompt;
 
-        public MainPageViewModel(IEditorService editorService, IStdInService stdinService, ILocalSettings settingsService)
+        public MainPageViewModel(IEditorService editorService, IStdInService stdinService, ILocalSettings settingsService, ILoggingService loggingService)
         {
             _editorService = editorService;
             _stdinService = stdinService;
+            _loggingService = loggingService;
 
             InitializeStdInTargetOptions();
             _settingsService = settingsService;

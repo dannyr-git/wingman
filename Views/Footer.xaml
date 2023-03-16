@@ -1,0 +1,30 @@
+<Page
+    x:Class="wingman.Views.Footer"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:helpers="using:wingman.Helpers"
+    xmlns:local="using:wingman.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid>
+        <ScrollViewer
+            x:Name="LogScrollViewer"
+            HorizontalScrollBarVisibility="Visible"
+            HorizontalScrollMode="Auto"
+            VerticalScrollBarVisibility="Visible"
+            VerticalScrollMode="Auto">
+            <TextBox
+                x:Name="LogTextBox"
+                Grid.Row="6"
+                Height="300"
+                local:TextBoxBehavior.AutoScroll="True"
+                AcceptsReturn="True"
+                FontFamily="Consolas"
+                IsReadOnly="True"
+                Text="{Binding LogText, Mode=OneWay}"
+                TextWrapping="Wrap" />
+        </ScrollViewer>
+    </Grid>
+</Page>

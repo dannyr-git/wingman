@@ -20,12 +20,150 @@
     <Thickness x:Key="LargeLeftRightMargin">30,0,30,0</Thickness>
     <!--  Page Style  -->
     <Style x:Key="CommonPageStyle" TargetType="Page">
-        <Setter Property="Background" Value="{ThemeResource ApplicationPageBackgroundThemeBrush}" />
+        <Setter Property="Background" Value="{StaticResource SystemAltMediumLowColor}" />
     </Style>
     <!--  Page Body Grid Style  -->
     <Style x:Key="PageBodyGridStyle" TargetType="Grid">
-        <Setter Property="Background" Value="{ThemeResource SystemControlPageBackgroundChromeLowBrush}" />
-        <Setter Property="Margin" Value="{StaticResource LargeLeftRightMargin}" />
+        <Setter Property="Background" Value="{StaticResource SystemAltMediumLowColor}" />
+        <Setter Property="Margin" Value="{StaticResource SmallLeftRightMargin}" />
     </Style>
+    <!--  Custom Color Palette  -->
+    <Color x:Key="SystemBaseHighColor">#DCDDDE</Color>
+    <Color x:Key="SystemBaseMediumHighColor">#B9BBBE</Color>
+    <Color x:Key="SystemBaseMediumColor">#99AAB5</Color>
+    <Color x:Key="SystemBaseMediumLowColor">#818E94</Color>
+    <Color x:Key="SystemBaseLowColor">#33FFFFFF</Color>
+
+    <Color x:Key="SystemAltHighColor">#36393F</Color>
+    <Color x:Key="SystemAltMediumHighColor">#2F3136</Color>
+    <Color x:Key="SystemAltMediumColor">#26292C</Color>
+    <Color x:Key="SystemAltMediumLowColor">#1C1E21</Color>
+    <Color x:Key="SystemAltLowColor">#15171A</Color>
+
+    <Color x:Key="SolidBackgroundFillColorBase">#36393F</Color>
+    <Color x:Key="SystemChromeAltLowColor">#202225</Color>
+    <Color x:Key="SystemChromeBlackHighColor">#FF000000</Color>
+    <Color x:Key="SystemChromeBlackLowColor">#33000000</Color>
+    <Color x:Key="SystemChromeBlackMediumLowColor">#66000000</Color>
+    <Color x:Key="SystemChromeBlackMediumColor">#CC000000</Color>
+    <Color x:Key="SystemChromeDisabledHighColor">#FF333333</Color>
+    <Color x:Key="SystemChromeDisabledLowColor">#FF7A7A7A</Color>
+    <Color x:Key="SystemChromeHighColor">#FF767676</Color>
+    <Color x:Key="SystemChromeLowColor">#FF1F1F1F</Color>
+    <Color x:Key="SystemChromeMediumColor">#FF393939</Color>
+    <Color x:Key="SystemChromeMediumLowColor">#FF2B2B2B</Color>
+    <Color x:Key="SystemChromeWhiteColor">#FFFFFFFF</Color>
+    <Color x:Key="SystemChromeGrayColor">#FF767676</Color>
+    <Color x:Key="SystemListLowColor">#19FFFFFF</Color>
+    <Color x:Key="SystemListMediumColor">#33FFFFFF</Color>
+    <Color x:Key="SystemErrorTextColor">#FF5555</Color>
+
+    <!--  Control styles  -->
+
+    <!--  ComboBox  -->
+    <Style TargetType="ComboBox">
+        <Setter Property="Background" Value="{StaticResource SystemAltHighColor}" />
+        <Setter Property="Foreground" Value="{StaticResource SystemBaseHighColor}" />
+        <Setter Property="BorderBrush" Value="{StaticResource SystemChromeAltLowColor}" />
+        <Setter Property="BorderThickness" Value="1" />
+    </Style>
+
+    <!--  CheckBox  -->
+    <StaticResource x:Key="CheckBoxForegroundUnchecked" ResourceKey="SystemBaseHighColor" />
+    <StaticResource x:Key="CheckBoxForegroundUncheckedPointerOver" ResourceKey="SystemBaseHighColor" />
+    <StaticResource x:Key="CheckBoxForegroundUncheckedPressed" ResourceKey="SystemBaseMediumHighColor" />
+    <StaticResource x:Key="CheckBoxForegroundUncheckedDisabled" ResourceKey="SystemChromeDisabledLowColor" />
+    <StaticResource x:Key="CheckBoxForegroundChecked" ResourceKey="SystemBaseHighColor" />
+    <StaticResource x:Key="CheckBoxForegroundCheckedPointerOver" ResourceKey="SystemBaseHighColor" />
+    <StaticResource x:Key="CheckBoxForegroundCheckedPressed" ResourceKey="SystemBaseMediumHighColor" />
+    <StaticResource x:Key="CheckBoxForegroundCheckedDisabled" ResourceKey="SystemChromeDisabledLowColor" />
+    <StaticResource x:Key="CheckBoxForegroundIndeterminate" ResourceKey="SystemBaseHighColor" />
+    <StaticResource x:Key="CheckBoxForegroundIndeterminatePointerOver" ResourceKey="SystemBaseHighColor" />
+    <StaticResource x:Key="CheckBoxForegroundIndeterminatePressed" ResourceKey="SystemBaseMediumHighColor" />
+    <StaticResource x:Key="CheckBoxForegroundIndeterminateDisabled" ResourceKey="SystemChromeDisabledLowColor" />
+    <StaticResource x:Key="CheckBoxCheckBackgroundStrokeUnchecked" ResourceKey="SystemChromeHighColor" />
+    <StaticResource x:Key="CheckBoxCheckBackgroundStrokeUncheckedPointerOver" ResourceKey="SystemChromeMediumColor" />
+    <StaticResource x:Key="CheckBoxCheckBackgroundStrokeUncheckedPressed" ResourceKey="SystemChromeLowColor" />
+    <StaticResource x:Key="CheckBoxCheckBackgroundStrokeUncheckedDisabled" ResourceKey="SystemChromeDisabledHighColor" />
+
+
+    <!--  TextBox  -->
+    <!--  TextBox  -->
+    <Style TargetType="TextBox">
+        <Setter Property="Background" Value="{StaticResource SystemAltHighColor}" />
+        <Setter Property="Foreground" Value="{StaticResource SystemBaseHighColor}" />
+        <Setter Property="BorderBrush" Value="{StaticResource SystemChromeAltLowColor}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="PlaceholderForeground" Value="{StaticResource SystemBaseMediumLowColor}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TextBox">
+                    <Grid>
+                        <Border
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}" />
+                        <ScrollViewer
+                            x:Name="ContentElement"
+                            Padding="{TemplateBinding Padding}"
+                            AutomationProperties.AccessibilityView="Raw"
+                            Foreground="{TemplateBinding Foreground}"
+                            HorizontalScrollBarVisibility="Hidden"
+                            IsTabStop="False"
+                            VerticalScrollBarVisibility="Hidden" />
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal" />
+                                <VisualState x:Name="PointerOver">
+                                    <VisualState.Setters>
+                                        <Setter Target="ContentElement.Foreground" Value="{StaticResource SystemBaseHighColor}" />
+                                        <Setter Target="ContentElement.Background" Value="{StaticResource SystemChromeHighColor}" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="Focused">
+                                    <VisualState.Setters>
+                                        <Setter Target="ContentElement.Foreground" Value="{StaticResource SystemBaseHighColor}" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
+
+    <!--  TextBlock  -->
+    <Style TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{StaticResource SystemBaseHighColor}" />
+    </Style>
+
+
+    <!--  DropDown (Assuming ComboBox)  -->
+    <!--  If you meant a different control for "DropDown", please replace the style accordingly  -->
+
+    <!--  Button  -->
+    <StaticResource x:Key="ButtonBackground" ResourceKey="SystemAltMediumHighColor" />
+    <StaticResource x:Key="ButtonBackgroundPointerOver" ResourceKey="SystemAltMediumColor" />
+    <StaticResource x:Key="ButtonBackgroundPressed" ResourceKey="SystemAltMediumLowColor" />
+    <StaticResource x:Key="ButtonBackgroundDisabled" ResourceKey="SystemAltMediumColor" />
+    <StaticResource x:Key="ButtonForeground" ResourceKey="SystemBaseHighColor" />
+    <StaticResource x:Key="ButtonForegroundPointerOver" ResourceKey="SystemBaseHighColor" />
+    <StaticResource x:Key="ButtonForegroundPressed" ResourceKey="SystemBaseMediumHighColor" />
+    <StaticResource x:Key="ButtonForegroundDisabled" ResourceKey="SystemChromeDisabledLowColor" />
+    <StaticResource x:Key="ButtonBorderBrush" ResourceKey="SystemChromeAltLowColor" />
+    <StaticResource x:Key="ButtonBorderBrushPointerOver" ResourceKey="SystemChromeAltLowColor" />
+    <StaticResource x:Key="ButtonBorderBrushPressed" ResourceKey="SystemChromeAltLowColor" />
+    <StaticResource x:Key="ButtonBorderBrushDisabled" ResourceKey="SystemChromeAltLowColor" />
+
+
+    <!--  Slider  -->
+    <Style TargetType="Slider">
+        <Setter Property="Background" Value="{StaticResource SystemAltMediumColor}" />
+        <Setter Property="Foreground" Value="{StaticResource SystemBaseHighColor}" />
+    </Style>
+
 
 </ResourceDictionary>

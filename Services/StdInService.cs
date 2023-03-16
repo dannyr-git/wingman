@@ -29,26 +29,25 @@ namespace wingman.Services
 
         private Process? _process;
 
+        ILoggingService Logger;
+
         public void SetProcess(Process process)
         {
             _process = process ?? throw new ArgumentNullException(nameof(process));
         }
 
-        //ILocalSettings settingsService;
-
-        public StdInService()
+        public StdInService(ILoggingService logger)
         {
-            //    this.settingsService = settingsService;
+            Logger = logger;
         }
-
 
         public async Task SendWithClipboardAsync(string str)
         {
             InputInjector inputInjector = InputInjector.TryCreate();
             // Save whatever is on the clipboard
-            var savedClipboard = ClipboardHelper.GetTextAsync().Result;
+            var savedClipboard = await ClipboardHelper.GetTextAsync();
 
-
+            Logger.LogDebug("Leveraging Clipboard to send string: " + str);
             ClipboardHelper.SetText(str);
 
 
@@ -81,6 +80,7 @@ namespace wingman.Services
             InputInjector inputInjector = InputInjector.TryCreate();
             if (inputInjector == null)
             {
+                Logger.LogException("Failed to create input injector.");
                 throw new InvalidOperationException("Failed to create input injector.");
             }
 

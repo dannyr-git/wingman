@@ -5,13 +5,13 @@ namespace wingman.Views
 {
     public sealed partial class ModalWindow : Window
     {
-        public ModalWindow(string input)
+        public ModalWindow(string input, int width = 800, int height = 600, bool isResizable = true)
         {
             InitializeComponent();
             ExtendsContentIntoTitleBar = true;
             SetTitleBar(ModalTitleBar);
-            this.SetWindowSize(800, 600);
-            //this.SetIsResizable(false);
+            this.SetWindowSize(width, height);
+            this.SetIsResizable(isResizable);
             myView.ViewModel.TextContent = input;
         }
     }

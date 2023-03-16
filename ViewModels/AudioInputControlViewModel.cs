@@ -1,15 +1,15 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.WinUI;
 using Microsoft.UI.Dispatching;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.ApplicationModel.Core;
 using Windows.Media.Devices;
-
-using Windows.UI.Core;
 using wingman.Interfaces;
 
 namespace wingman.ViewModels
@@ -20,8 +20,10 @@ namespace wingman.ViewModels
         private readonly ILocalSettings _settingsService;
 
         private List<MicrophoneDevice> _micDevices;
-        private CoreDispatcher _dispatcher;
         private DispatcherQueue _dispatcherQueue;
+        private readonly TimeSpan _updateInterval = TimeSpan.FromMilliseconds(100);
+        private Stopwatch _stopwatch;
+        private double _lastVolume;
 
         private List<string> _microphoneDeviceOptions = new List<string>();
         private EventHandler<double> MicrophoneService_VolumeChanged;
@@ -40,12 +42,14 @@ namespace wingman.ViewModels
 
             MicrophoneService_VolumeChanged = async (sender, volume) =>
             {
-                await volumeHandler(volume);
+                if (!_disposing && !_disposed)
+                    await VolumeHandler(volume);
             };
 
             _microphoneDeviceService.VolumeChanged += MicrophoneService_VolumeChanged;
 
             _dispatcherQueue = DispatcherQueue.GetForCurrentThread();
+            _stopwatch = Stopwatch.StartNew();
 
             RefreshDevices = new RelayCommand(PopulateMicrophoneDeviceOptions);
             PopulateMicrophoneDeviceOptions();
@@ -89,12 +93,19 @@ namespace wingman.ViewModels
             _disposed = true;
         }
 
-
-        private async Task volumeHandler(double volume)
+        private async Task VolumeHandler(double volume)
         {
-            if (!_disposing && !_disposed)
-                //_dispatcherQueue.TryEnqueue(() => { ProgressBarValue = volume; });
-                await CommunityToolkit.WinUI.DispatcherQueueExtensions.EnqueueAsync(_dispatcherQueue, () => { ProgressBarValue = volume; });
+            if (_disposing || _disposed) return;
+
+            _lastVolume = volume;
+            if (_stopwatch.Elapsed >= _updateInterval)
+            {
+                _stopwatch.Restart();
+                await _dispatcherQueue.EnqueueAsync(() =>
+                {
+                    ProgressBarValue = _lastVolume;
+                });
+            }
         }
 
         private async void PopulateMicrophoneDeviceOptions()

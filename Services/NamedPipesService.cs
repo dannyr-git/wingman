@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Pipes;
 using System.Security.AccessControl;
@@ -29,6 +30,7 @@ namespace wingman.Services
                 cts.Cancel();
                 mouseServer.Wait();
             }
+            Debug.WriteLine("Namedpipes disposed");
         }
 
         private async Task MouseServer()
@@ -53,7 +55,7 @@ namespace wingman.Services
                 catch (Exception ex)
                 {
                     // Log the exception or do something else with it
-                    Console.WriteLine(ex.ToString());
+                    Debug.WriteLine(ex.ToString());
                 }
                 await Task.Delay(1000);
             }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using System.Threading;
 using wingman.Natives.Helpers;
@@ -150,6 +151,7 @@ namespace wingman.Natives
             OnReset();
             isDisposed = true;
             GC.SuppressFinalize(this);
+            Debug.WriteLine("Nativekeyboard disposed");
         }
 
         public void OnReset()

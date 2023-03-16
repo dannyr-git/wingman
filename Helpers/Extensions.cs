@@ -4,11 +4,24 @@ using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using System;
 using System.Reflection;
+using System.Threading.Tasks;
 using Windows.Graphics;
 using WinRT.Interop;
 
 namespace wingman.Helpers
 {
+    public static class TaskExtensions
+    {
+        public static async Task<TResult> TimeoutAfter<TResult>(this Task<TResult> task, TimeSpan timeout)
+        {
+            if (task == await Task.WhenAny(task, Task.Delay(timeout)))
+                return await task;
+            else
+                throw new TimeoutException("The operation has timed out.");
+        }
+    }
+
+
     public static class UIElementExtensions
     {
         public static void ChangeCursor(this UIElement uiElement, InputCursor cursor)
@@ -20,7 +33,7 @@ namespace wingman.Helpers
 
     }
 
-    public static class WindowExtensions
+    public static class Extensions
     {
         public static AppWindow GetAppWindow(this Window window)
         {

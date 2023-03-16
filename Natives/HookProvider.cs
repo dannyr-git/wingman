@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using WindowsHook;
 
 namespace wingman.Natives
@@ -27,6 +28,7 @@ namespace wingman.Natives
             }
             isDisposed = true;
             GC.SuppressFinalize(this);
+            Debug.WriteLine("Hookprovider disposed");
         }
     }
 }

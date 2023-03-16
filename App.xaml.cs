@@ -3,6 +3,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.UI.Xaml;
 using System;
+using System.Diagnostics;
+using System.Linq;
 using wingman.Handlers;
 using wingman.Interfaces;
 using wingman.Natives;
@@ -12,7 +14,7 @@ using wingman.Views;
 
 namespace wingman
 {
-    public partial class App : Application
+    public partial class App : Application, IDisposable
     {
         private readonly IHost _host;
 
@@ -24,10 +26,29 @@ namespace wingman
             Ioc.Default.ConfigureServices(_host.Services);
         }
 
+        public void Dispose()
+        {
+            var serviceTypes = _host.Services.GetType().Assembly.GetTypes()
+                .Where(t => t.GetInterfaces().Contains(typeof(IDisposable)) && !t.IsInterface);
+
+            foreach (var serviceType in serviceTypes)
+            {
+                var serviceInstance = _host.Services.GetService(serviceType);
+                if (serviceInstance is IDisposable disposableService)
+                {
+                    disposableService.Dispose();
+                }
+            }
+            Debug.WriteLine("Services disposed.");
+            _host.Dispose();
+            Debug.WriteLine("Host disposed.");
+        }
+
+
         private void App_UnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
         {
-            // complete this function
-            Console.WriteLine(e.Exception.ToString());
+            var Logger = Ioc.Default.GetRequiredService<ILoggingService>();
+            Logger.LogException(e.Exception.ToString());
         }
 
         protected override void OnLaunched(LaunchActivatedEventArgs args)
@@ -38,27 +59,37 @@ namespace wingman
 
             IAppActivationService appWindowService = Ioc.Default.GetRequiredService<IAppActivationService>();
             appWindowService.Activate(args);
+            MainWindow mw = Ioc.Default.GetRequiredService<MainWindow>();
+            mw.SetApp(this);
         }
 
         private static IHost BuildHost() => Host.CreateDefaultBuilder()
                 .ConfigureServices((context, services) =>
                 {
                     _ = services
+                        .AddSingleton<ILoggingService, LoggingService>()
+                        // Handlers
                         .AddSingleton<EventsHandler>()
                         .AddSingleton<HookProvider>()
+                        // Other
                         .AddSingleton<INativeKeyboard, NativeKeyboard>()
                         .AddSingleton<IKeybindEvents, KeybindEvents>()
+                        // Services 
+                        .AddSingleton<IWindowingService, WindowingService>()
                         .AddSingleton<IMicrophoneDeviceService, MicrophoneDeviceService>()
                         .AddSingleton<IEditorService, EditorService>()
                         .AddSingleton<IStdInService, StdInService>()
                         .AddSingleton<ILocalSettings, LocalSettingsService>()
                         .AddSingleton<IAppActivationService, AppActivationService>()
                         .AddTransient<IOpenAIAPIService, OpenAIAPIService>()
+                        // ViewModels   
                         .AddSingleton<AudioInputControlViewModel>()
                         .AddSingleton<OpenAIControlViewModel>()
                         .AddSingleton<MainWindowViewModel>()
                         .AddTransient<ModalControlViewModel>()
                         .AddSingleton<MainPageViewModel>()
+                        .AddSingleton<FooterViewModel>()
+                        // Views
                         .AddSingleton<MainWindow>();
 
                 })
