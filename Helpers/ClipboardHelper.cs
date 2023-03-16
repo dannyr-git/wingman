@@ -5,7 +5,7 @@ using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
 using Windows.Storage.Streams;
 
-namespace wingman.Natives.Helpers
+namespace wingman.Helpers
 {
     public static class ClipboardHelper
     {

@@ -5,12 +5,11 @@ using Windows.Media.Core;
 using Windows.Media.Playback;
 using wingman.Helpers;
 using wingman.Interfaces;
-using wingman.Natives.Helpers;
 using wingman.ViewModels;
 
-namespace wingman.Handlers
+namespace wingman.Services
 {
-    public class EventsHandler : IDisposable
+    public class EventHandlerService : IEventHandlerService, IDisposable
     {
         private readonly IGlobalHotkeyService globalHotkeyService;
         private readonly IMicrophoneDeviceService micService;
@@ -27,9 +26,9 @@ namespace wingman.Handlers
         private bool isRecording;
         private bool isProcessing;
 
-        public EventHandler<bool> InferenceCallback;
+        public EventHandler<bool> InferenceCallback { get; set; }
 
-        public EventsHandler(OpenAIControlViewModel openAIControlViewModel,
+        public EventHandlerService(OpenAIControlViewModel openAIControlViewModel,
             IGlobalHotkeyService globalHotkeyService,
             IMicrophoneDeviceService micService,
             IOpenAIAPIService chatGPTService,
@@ -44,9 +43,9 @@ namespace wingman.Handlers
             this.chatGPTService = chatGPTService;
             this.stdInService = stdInService;
             this.settingsService = settingsService;
-            this.Logger = loggingService;
+            Logger = loggingService;
             this.windowingService = windowingService;
-            this.mediaPlayer = new MediaPlayer();
+            mediaPlayer = new MediaPlayer();
             this.openAIControlViewModel = openAIControlViewModel;
 
             Initialize();
@@ -156,7 +155,7 @@ namespace wingman.Handlers
                 var prompt = await chatGPTService.GetWhisperResponse(file);
                 Logger.LogDebug("WhisperAPI Prompt Received: " + prompt);
 
-                if (String.IsNullOrEmpty(prompt))
+                if (string.IsNullOrEmpty(prompt))
                 {
                     Logger.LogError("WhisperAPI Prompt was Empty");
                     return await Task.FromResult(true);
@@ -168,7 +167,7 @@ namespace wingman.Handlers
                 {
                     Logger.LogDebug("Append_Clipboard is true.");
                     cbstr = await ClipboardHelper.GetTextAsync();
-                    if (!String.IsNullOrEmpty(cbstr))
+                    if (!string.IsNullOrEmpty(cbstr))
                     {
                         prompt = PromptCleaners.TrimWhitespaces(cbstr);
                         prompt = PromptCleaners.TrimNewlines(cbstr);

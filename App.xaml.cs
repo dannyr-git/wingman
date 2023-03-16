@@ -5,7 +5,6 @@ using Microsoft.UI.Xaml;
 using System;
 using System.Diagnostics;
 using System.Linq;
-using wingman.Handlers;
 using wingman.Interfaces;
 using wingman.Services;
 using wingman.ViewModels;
@@ -54,7 +53,7 @@ namespace wingman
         {
             base.OnLaunched(args);
 
-            Ioc.Default.GetRequiredService<EventsHandler>(); // make sure events are initialized
+            Ioc.Default.GetRequiredService<IEventHandlerService>(); // make sure events are initialized
 
             IAppActivationService appWindowService = Ioc.Default.GetRequiredService<IAppActivationService>();
             appWindowService.Activate(args);
@@ -66,15 +65,10 @@ namespace wingman
                 .ConfigureServices((context, services) =>
                 {
                     _ = services
+                        // Services
                         .AddSingleton<IGlobalHotkeyService, GlobalHotkeyService>()
                         .AddSingleton<ILoggingService, LoggingService>()
-                        // Handlers
-                        .AddSingleton<EventsHandler>()
-                        //.AddSingleton<HookProvider>()
-                        // Other
-                        //.AddSingleton<INativeKeyboard, NativeKeyboard>()
-                        //.AddSingleton<IKeybindEvents, KeybindEvents>()
-                        // Services 
+                        .AddSingleton<IEventHandlerService, EventHandlerService>()
                         .AddSingleton<IWindowingService, WindowingService>()
                         .AddSingleton<IMicrophoneDeviceService, MicrophoneDeviceService>()
                         .AddSingleton<IEditorService, EditorService>()

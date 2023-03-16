@@ -5,8 +5,8 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Windows.System;
 using Windows.UI.Input.Preview.Injection;
+using wingman.Helpers;
 using wingman.Interfaces;
-using wingman.Natives.Helpers;
 
 namespace wingman.Services
 {
@@ -48,7 +48,7 @@ namespace wingman.Services
             var savedClipboard = await ClipboardHelper.GetTextAsync();
 
             Logger.LogDebug("Leveraging Clipboard to send string: " + str);
-            ClipboardHelper.SetText(str);
+            await ClipboardHelper.SetTextAsync(str);
 
 
             // Paste the clipboard out
@@ -70,7 +70,7 @@ namespace wingman.Services
         }
     }));
 
-            ClipboardHelper.SetText(savedClipboard);
+            await ClipboardHelper.SetTextAsync(savedClipboard);
         }
 
         // The new InputInjector class works 500x better than SendKeys; so we abandon NativeKeyboard here 

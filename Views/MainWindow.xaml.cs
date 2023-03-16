@@ -4,8 +4,8 @@ using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Windows.UI.Core;
-using wingman.Handlers;
 using wingman.Helpers;
+using wingman.Interfaces;
 using wingman.ViewModels;
 
 namespace wingman.Views
@@ -22,11 +22,11 @@ namespace wingman.Views
 
     public sealed partial class MainWindow : Window
     {
-        public EventsHandler eventsHandler;
+        public IEventHandlerService eventsHandler;
         private DispatcherQueue _dispatcherQueue;
         private App _app;
 
-        public MainWindow(EventsHandler eventsHandler)
+        public MainWindow(IEventHandlerService eventsHandler)
         {
             InitializeComponent();
 
