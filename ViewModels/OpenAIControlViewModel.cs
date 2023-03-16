@@ -3,20 +3,15 @@ using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using System;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using wingman.Interfaces;
-using wingman.Natives;
 
 namespace wingman.ViewModels
 {
     public class OpenAIControlViewModel : ObservableObject
     {
         private readonly ILocalSettings _settingsService;
-        private readonly IOpenAIAPIService _openAIService;
-        private readonly INativeKeyboard _nativeKeyboard;
-        private readonly IKeybindEvents _keybindEvents;
-        private bool _saveButtonEnabled;
+        private readonly IGlobalHotkeyService _globalHotkeyService;
         public ICommand ApplyKeyAndRestartCommand { get; private set; }
         private string _apikey;
         private bool _keypressed;
@@ -30,12 +25,10 @@ namespace wingman.ViewModels
         private bool _appendclipboard;
         private bool _appendclipboardmodal;
 
-        public OpenAIControlViewModel(ILocalSettings settingsService, IOpenAIAPIService openAIService, INativeKeyboard nativeKeyboard, IKeybindEvents keybindEvents)
+        public OpenAIControlViewModel(ILocalSettings settingsService, IOpenAIAPIService openAIService, IGlobalHotkeyService globalHotkeyService)
         {
             _settingsService = settingsService;
-            _openAIService = openAIService;
-            _nativeKeyboard = nativeKeyboard;
-            _keybindEvents = keybindEvents;
+            _globalHotkeyService = globalHotkeyService;
 
             Main_Hotkey_Toggled = false;
             Api_Key = _settingsService.Load<string>("ApiKey");
@@ -117,24 +110,13 @@ namespace wingman.ViewModels
         {
             Main_Hotkey_Toggled = true;
 
-            _keybindEvents.ToggleKeybinds();
-            _nativeKeyboard.OnKeyDown += NativeKeyboard_OnKeyDown;
+            await _globalHotkeyService.ConfigureHotkeyAsync(NativeKeyboard_OnKeyDown);
 
-            while (Main_Hotkey_Toggled)
-                await Task.Delay(500);
-
-            _nativeKeyboard.OnKeyDown -= NativeKeyboard_OnKeyDown;
-            _keybindEvents.ToggleKeybinds();
+            Main_Hotkey_Toggled = false;
 
             if (!String.IsNullOrEmpty(_purgatoryhotkey))
             {
                 // try to clear sticky keys
-                if (_purgatoryhotkey.StartsWith("Ctrl"))
-                    _nativeKeyboard.CtrlReset();
-                else if (_purgatoryhotkey.StartsWith("Alt"))
-                    _nativeKeyboard.AltReset();
-                else if (_purgatoryhotkey.StartsWith("Shift"))
-                    _nativeKeyboard.ShiftReset();
 
                 if ((sender as ToggleButton).Name == "ConfigMainHotkeyButton")
                 {
@@ -147,6 +129,7 @@ namespace wingman.ViewModels
 
             }
         }
+
 
         private bool NativeKeyboard_OnKeyDown(string input)
         {

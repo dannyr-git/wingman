@@ -7,7 +7,6 @@ using System.Diagnostics;
 using System.Linq;
 using wingman.Handlers;
 using wingman.Interfaces;
-using wingman.Natives;
 using wingman.Services;
 using wingman.ViewModels;
 using wingman.Views;
@@ -67,13 +66,14 @@ namespace wingman
                 .ConfigureServices((context, services) =>
                 {
                     _ = services
+                        .AddSingleton<IGlobalHotkeyService, GlobalHotkeyService>()
                         .AddSingleton<ILoggingService, LoggingService>()
                         // Handlers
                         .AddSingleton<EventsHandler>()
-                        .AddSingleton<HookProvider>()
+                        //.AddSingleton<HookProvider>()
                         // Other
-                        .AddSingleton<INativeKeyboard, NativeKeyboard>()
-                        .AddSingleton<IKeybindEvents, KeybindEvents>()
+                        //.AddSingleton<INativeKeyboard, NativeKeyboard>()
+                        //.AddSingleton<IKeybindEvents, KeybindEvents>()
                         // Services 
                         .AddSingleton<IWindowingService, WindowingService>()
                         .AddSingleton<IMicrophoneDeviceService, MicrophoneDeviceService>()

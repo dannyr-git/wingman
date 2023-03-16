@@ -5,7 +5,6 @@ using Windows.Media.Core;
 using Windows.Media.Playback;
 using wingman.Helpers;
 using wingman.Interfaces;
-using wingman.Natives;
 using wingman.Natives.Helpers;
 using wingman.ViewModels;
 
@@ -13,7 +12,7 @@ namespace wingman.Handlers
 {
     public class EventsHandler : IDisposable
     {
-        private readonly IKeybindEvents events;
+        private readonly IGlobalHotkeyService globalHotkeyService;
         private readonly IMicrophoneDeviceService micService;
         private readonly IOpenAIAPIService chatGPTService;
         private readonly IStdInService stdInService;
@@ -31,7 +30,7 @@ namespace wingman.Handlers
         public EventHandler<bool> InferenceCallback;
 
         public EventsHandler(OpenAIControlViewModel openAIControlViewModel,
-            IKeybindEvents events,
+            IGlobalHotkeyService globalHotkeyService,
             IMicrophoneDeviceService micService,
             IOpenAIAPIService chatGPTService,
             IStdInService stdInService,
@@ -40,7 +39,7 @@ namespace wingman.Handlers
             IWindowingService windowingService
             )
         {
-            this.events = events;
+            this.globalHotkeyService = globalHotkeyService;
             this.micService = micService;
             this.chatGPTService = chatGPTService;
             this.stdInService = stdInService;
@@ -55,11 +54,11 @@ namespace wingman.Handlers
 
         private void Initialize()
         {
-            events.OnMainHotkey += Events_OnMainHotkey;
-            events.OnMainHotkeyRelease += Events_OnMainHotkeyRelease;
+            globalHotkeyService.RegisterHotkeyDown("Main_Hotkey", Events_OnMainHotkey);
+            globalHotkeyService.RegisterHotkeyUp("Main_Hotkey", Events_OnMainHotkeyRelease);
 
-            events.OnModalHotkey += Events_OnModalHotkey;
-            events.OnModalHotkeyRelease += Events_OnModalHotkeyRelease;
+            globalHotkeyService.RegisterHotkeyDown("Modal_Hotkey", Events_OnModalHotkey);
+            globalHotkeyService.RegisterHotkeyUp("Modal_Hotkey", Events_OnModalHotkeyRelease);
 
             isDisposed = false;
             isRecording = false;
@@ -72,11 +71,14 @@ namespace wingman.Handlers
         {
             if (!isDisposed)
             {
-                events.OnMainHotkey -= Events_OnMainHotkey;
-                events.OnMainHotkeyRelease -= Events_OnMainHotkeyRelease;
+                globalHotkeyService.UnregisterHotkeyDown("Main_Hotkey", Events_OnMainHotkey);
+                globalHotkeyService.UnregisterHotkeyUp("Main_Hotkey", Events_OnMainHotkeyRelease);
 
-                events.OnModalHotkey -= Events_OnModalHotkey;
-                events.OnModalHotkeyRelease -= Events_OnModalHotkeyRelease;
+                globalHotkeyService.UnregisterHotkeyDown("Modal_Hotkey", Events_OnModalHotkey);
+                globalHotkeyService.UnregisterHotkeyUp("Modal_Hotkey", Events_OnModalHotkeyRelease);
+
+
+
 
                 mediaPlayer.Dispose();
                 Debug.WriteLine("EventHandler disposed.");
@@ -208,18 +210,22 @@ namespace wingman.Handlers
         }
 
 
-        private async Task<bool> Events_OnMainHotkey()
+        //private async Task<bool> Events_OnMainHotkey()
+        private async void Events_OnMainHotkey(object sender, EventArgs e)
         {
-            return await HandleHotkey(async () =>
+            // return
+            await HandleHotkey(async () =>
             {
                 // In case hotkeys end up being snowflakes
                 return await Task.FromResult(true);
             });
         }
 
-        private async Task<bool> Events_OnMainHotkeyRelease()
+        //private async Task<bool> Events_OnMainHotkeyRelease()
+        private async void Events_OnMainHotkeyRelease(object sender, EventArgs e)
         {
-            return await HandleHotkeyRelease(async (response) =>
+            // return
+            await HandleHotkeyRelease(async (response) =>
             {
                 Logger.LogDebug("Returning");
                 await MouseWait(false);
@@ -230,18 +236,22 @@ namespace wingman.Handlers
             });
         }
 
-        private async Task<bool> Events_OnModalHotkey()
+        //private async Task<bool> Events_OnModalHotkey()
+        private async void Events_OnModalHotkey(object sender, EventArgs e)
         {
-            return await HandleHotkey(async () =>
+            // return
+            await HandleHotkey(async () =>
             {
                 // In case hotkeys end up being snowflakes
                 return await Task.FromResult(true);
             });
         }
 
-        private async Task<bool> Events_OnModalHotkeyRelease()
+        //private async Task<bool> Events_OnModalHotkeyRelease()
+        private async void Events_OnModalHotkeyRelease(object sender, EventArgs e)
         {
-            return await HandleHotkeyRelease(async (response) =>
+            //return
+            await HandleHotkeyRelease(async (response) =>
             {
                 await MouseWait(false);
                 await windowingService.CreateModal(response);

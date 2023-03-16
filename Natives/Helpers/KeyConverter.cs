@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Windows.System;
 using Windows.UI.Input.Preview.Injection;
 
-
 namespace wingman.Natives.Helpers
 {
     public static class KeyConverter
