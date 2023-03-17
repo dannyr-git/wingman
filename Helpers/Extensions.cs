@@ -59,8 +59,6 @@ namespace wingman.Helpers
             }
         }
 
-
-
         public static AppWindow GetAppWindow(this Window window)
         {
             IntPtr windowHandle = WindowNative.GetWindowHandle(window);
@@ -112,6 +110,9 @@ namespace wingman.Helpers
         public static void SetIsAlwaysOnTop(this Window window, bool value)
         {
             AppWindow appWindow = window.GetAppWindow();
+
+            if (appWindow == null)
+                return;
 
             if (appWindow.Presenter is OverlappedPresenter overlappedPresenter)
             {

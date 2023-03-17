@@ -15,5 +15,4 @@ namespace wingman.Views
 
         public AudioInputControlViewModel ViewModel { get; }
     }
-
 }

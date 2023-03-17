@@ -24,8 +24,7 @@
                 FontFamily="Consolas"
                 IsReadOnly="True"
                 Text="{Binding LogText, Mode=OneWay}"
-                TextWrapping="Wrap" 
-                />
+                TextWrapping="Wrap" />
         </ScrollViewer>
     </Grid>
 </Page>

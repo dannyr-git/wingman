@@ -332,6 +332,8 @@ Logger.LogDebug("WhisperAPI Prompt Received: " + prompt);
 #else
                 Logger.LogInfo("Sending response via Modal...");
 #endif
+                windowingService.ForceStatusHide();
+                await Task.Delay(100); // make sure focus changes are done
                 await windowingService.CreateModal(response);
                 return await Task.FromResult(true);
             }, "MODAL_HOTKEY");

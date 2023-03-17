@@ -48,9 +48,9 @@ namespace wingman.Interfaces
         {
             ModalWindow dialog = new ModalWindow(content, 640, 480);
             dialog.Closed += Dialog_Closed;
+            dialog.Title = "Wingman Codeblock";
             dialog.Activate();
 
-            dialog.Title = "Wingman Codeblock";
             openWindows.Add(dialog);
             Logger.LogDebug("Modal activated.");
         }
@@ -60,11 +60,11 @@ namespace wingman.Interfaces
             ModalWindow dialog = new ModalWindow(content, width, height, isresizable);
 
             dialog.Closed += Dialog_Closed;
+            dialog.Title = title;
 
             if (activated)
                 dialog.Activate();
 
-            dialog.Title = title;
             openWindows.Add(dialog);
             Logger.LogDebug("Modal activated.");
         }

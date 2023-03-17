@@ -27,12 +27,14 @@
                 VerticalAlignment="Center"
                 Text="Set your preprompt :" />
             <TextBox
+                x:Name="PrepromptTextblock"
                 MaxWidth="550"
                 Margin="1,0,0,0"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch"
                 AcceptsReturn="True"
                 CanBeScrollAnchor="True"
+                IsTabStop="False"
                 Text="{Binding PrePrompt, Mode=TwoWay}"
                 TextWrapping="Wrap" />
         </StackPanel>
