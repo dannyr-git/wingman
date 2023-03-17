@@ -10,6 +10,7 @@ namespace wingman.Views
         {
             InitializeComponent();
             ViewModel = Ioc.Default.GetRequiredService<AudioInputControlViewModel>();
+            DataContext=ViewModel;
         }
 
         public AudioInputControlViewModel ViewModel { get; }
