@@ -42,7 +42,7 @@ namespace wingman.Services
             });
         }
 
-        private async Task<bool> IsApiKeyValid()
+        public async Task<bool> IsApiKeyValid()
         {
             if (String.IsNullOrEmpty(_apikey) || !_apikey.StartsWith("sk-") || _apikey.Length != 51)
                 return false;
@@ -92,8 +92,22 @@ namespace wingman.Services
             }
             else
             {
-                Logger.LogException($"Failed to generate response: {completionResult.Error?.Message}");
-                throw new Exception($"Failed to generate response: {completionResult.Error?.Message}");
+                var result = completionResult.Error?.Message;
+
+                if (result != null && result.Contains("Incorrect API key provided"))
+                {
+                    Logger.LogError("You aren't using a valid OpenAI API Key.");
+                }
+                else
+                {
+                    Logger.LogError("OpenAI API Failed, Reason :");
+                    if (result == null)
+                        Logger.LogError("Result was null.");
+                    else
+                        Logger.LogError(result);
+                }
+
+                return String.Empty;
             }
         }
 
@@ -157,15 +171,29 @@ namespace wingman.Services
                 FileName = inmp3.Name,
             });
 
-            if (completionResult.Successful)
+            if (completionResult.Successful && !completionResult.Text.Contains("\"type\": \"invalid_request_error\","))
             {
                 //Logger.LogInfo($"Whisper API Response: " + completionResult.Text);  // sent elsewhere for now
                 return completionResult.Text;
             }
             else
             {
-                Logger.LogException($"Whisper API Error: " + completionResult.Error?.Message);
-                throw new Exception($"Whisper API Error: " + completionResult.Error?.Message);
+                var result = completionResult.Error?.Message;
+
+                if (result != null && result.Contains("Incorrect API key provided"))
+                {
+                    Logger.LogError("You aren't using a valid OpenAI API Key.");
+                }
+                else
+                {
+                    Logger.LogError("Whisper API Failed, Reason :");
+                    if (result == null)
+                        Logger.LogError("Result was null.");
+                    else
+                        Logger.LogError(result);
+                }
+
+                return String.Empty;
             }
         }
 

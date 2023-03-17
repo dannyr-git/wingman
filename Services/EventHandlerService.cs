@@ -1,4 +1,6 @@
-﻿using System;
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Windows.Media.Core;
@@ -13,7 +15,6 @@ namespace wingman.Services
     {
         private readonly IGlobalHotkeyService globalHotkeyService;
         private readonly IMicrophoneDeviceService micService;
-        private readonly IOpenAIAPIService chatGPTService;
         private readonly IStdInService stdInService;
         private readonly ILocalSettings settingsService;
         private readonly ILoggingService Logger;
@@ -30,7 +31,6 @@ namespace wingman.Services
         public EventHandlerService(OpenAIControlViewModel openAIControlViewModel,
             IGlobalHotkeyService globalHotkeyService,
             IMicrophoneDeviceService micService,
-            IOpenAIAPIService chatGPTService,
             IStdInService stdInService,
             ILocalSettings settingsService,
             ILoggingService loggingService,
@@ -39,7 +39,6 @@ namespace wingman.Services
         {
             this.globalHotkeyService = globalHotkeyService;
             this.micService = micService;
-            this.chatGPTService = chatGPTService;
             this.stdInService = stdInService;
             this.settingsService = settingsService;
             Logger = loggingService;
@@ -166,37 +165,39 @@ Logger.LogDebug("Send recording to Whisper API");
 #endif
                 windowingService.UpdateStatus("Waiting for Whisper API Response... (This can lag)");
 
-                var whisperResponseTask = chatGPTService.GetWhisperResponse(file);
+                string prompt = string.Empty;
                 var taskwatch = new Stopwatch();
                 taskwatch.Start();
-
-
-                while (!whisperResponseTask.IsCompleted)
+                using (var scope = Ioc.Default.CreateScope())
                 {
-                    await Task.Delay(50);
-                    if (taskwatch.Elapsed.TotalSeconds >= 3)
+                    var openAIAPIService = scope.ServiceProvider.GetRequiredService<IOpenAIAPIService>();
+                    var whisperResponseTask = openAIAPIService.GetWhisperResponse(file);
+
+
+                    while (!whisperResponseTask.IsCompleted)
                     {
-                        taskwatch.Restart();
-                        Logger.LogInfo("   Still waiting...");
+                        await Task.Delay(50);
+                        if (taskwatch.Elapsed.TotalSeconds >= 3)
+                        {
+                            taskwatch.Restart();
+                            Logger.LogInfo("   Still waiting...");
+                        }
                     }
+                    prompt = await whisperResponseTask;
                 }
-                var prompt = await whisperResponseTask;
                 taskwatch.Stop();
 
                 windowingService.UpdateStatus("Whisper API Responded...");
 #if DEBUG
 Logger.LogDebug("WhisperAPI Prompt Received: " + prompt);
 #else
-                Logger.LogInfo("Whisper API responded: " + prompt);
 #endif
-
-
-
                 if (string.IsNullOrEmpty(prompt))
                 {
                     Logger.LogError("WhisperAPI Prompt was Empty");
                     return await Task.FromResult(true);
                 }
+                Logger.LogInfo("Whisper API responded: " + prompt);
 
                 string? cbstr = "";
 
@@ -227,37 +228,42 @@ Logger.LogDebug("WhisperAPI Prompt Received: " + prompt);
                     throw e;
                 }
 
-                string response;
-                try
+                string response = String.Empty;
+                using (var scope = Ioc.Default.CreateScope())
                 {
-                    windowingService.UpdateStatus("Waiting for GPT response...");
+                    var openAIAPIService = scope.ServiceProvider.GetRequiredService<IOpenAIAPIService>();
+
+                    try
+                    {
+                        windowingService.UpdateStatus("Waiting for GPT response...");
 #if DEBUG
                     Logger.LogDebug("Sending prompt to OpenAI API: " + prompt);
 #else
-                    Logger.LogInfo("Waiting for GPT Response... (This can lag)");
+                        Logger.LogInfo("Waiting for GPT Response... (This can lag)");
 #endif
 
-                    var responseTask = chatGPTService.GetResponse(prompt);
-                    taskwatch = Stopwatch.StartNew();
-                    while (!responseTask.IsCompleted)
-                    {
-                        await Task.Delay(50);
-                        if (taskwatch.Elapsed.TotalSeconds >= 3)
+                        var responseTask = openAIAPIService.GetResponse(prompt);
+                        taskwatch = Stopwatch.StartNew();
+                        while (!responseTask.IsCompleted)
                         {
-                            taskwatch.Restart();
-                            Logger.LogInfo("   Still waiting...");
+                            await Task.Delay(50);
+                            if (taskwatch.Elapsed.TotalSeconds >= 3)
+                            {
+                                taskwatch.Restart();
+                                Logger.LogInfo("   Still waiting...");
+                            }
                         }
-                    }
-                    response = await responseTask;
-                    taskwatch.Stop();
+                        response = await responseTask;
+                        taskwatch.Stop();
 
-                    windowingService.UpdateStatus("Response Received ...");
-                    Logger.LogInfo("Received response from GPT...");
-                }
-                catch (Exception e)
-                {
-                    Logger.LogException("Error sending prompt to OpenAI API: " + e.Message);
-                    throw e;
+                        windowingService.UpdateStatus("Response Received ...");
+                        Logger.LogInfo("Received response from GPT...");
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.LogException("Error sending prompt to OpenAI API: " + e.Message);
+                        throw e;
+                    }
                 }
 
                 await action(response);

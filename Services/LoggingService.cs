@@ -45,7 +45,7 @@ namespace wingman.Services
     {
         private readonly object _lock = new object();
         private readonly string _logFile;
-        private string _logBook = $"Welcome to Wingman!\r\n";
+        private string _logBook = $"Welcome to Wingman!\r\n\r\n";
         private VerboseLevel _verboseLevel = VerboseLevel.Normal;
 
         public event EventHandler<string> UIOutputHandler;
@@ -57,8 +57,9 @@ namespace wingman.Services
             _logBook += $"2. Press and hold your hotkey to record, let go when you're done speaking.\r\n";
             _logBook += $"3. Main+Clipboard and Modal+Clipboard means whatever is on your clipboard will be appended to the voice prompt you are sending\r\n";
             _logBook += $"4. To configure a hotkey, click the button + hit a hotkey\r\n";
-            _logBook += $"Please go to https://github.com/dannyr-git/wingman with issues/requests";
-            _logBook += $"Log Start: {DateTime.Now:yyyy-MM-dd HH:mm:ss}\r\n";
+            _logBook += $"GIT: https://github.com/dannyr-git/wingman\r\n";
+            _logBook += $"\r\nPlease remember, we're still in Pre-Release!\r\n";
+            _logBook += $"\r\n>>> Log Start: {DateTime.Now:yyyy-MM-dd HH:mm:ss}\r\n";
 
             string logDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Wingman");
             Directory.CreateDirectory(logDirectory);

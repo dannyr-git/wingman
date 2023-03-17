@@ -82,7 +82,7 @@ namespace wingman
                         .AddSingleton<IStdInService, StdInService>()
                         .AddSingleton<ILocalSettings, LocalSettingsService>()
                         .AddSingleton<IAppActivationService, AppActivationService>()
-                        .AddTransient<IOpenAIAPIService, OpenAIAPIService>()
+                        .AddScoped<IOpenAIAPIService, OpenAIAPIService>()
                         // ViewModels   
                         .AddSingleton<AudioInputControlViewModel>()
                         .AddSingleton<OpenAIControlViewModel>()

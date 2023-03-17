@@ -1,5 +1,4 @@
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using System;
@@ -12,6 +11,7 @@ namespace wingman.ViewModels
     {
         private readonly ILocalSettings _settingsService;
         private readonly IGlobalHotkeyService _globalHotkeyService;
+        private readonly ILoggingService _logger;
         public ICommand ApplyKeyAndRestartCommand { get; private set; }
         private string _apikey;
         private bool _keypressed;
@@ -25,10 +25,11 @@ namespace wingman.ViewModels
         private bool _appendclipboard;
         private bool _appendclipboardmodal;
 
-        public OpenAIControlViewModel(ILocalSettings settingsService, IOpenAIAPIService openAIService, IGlobalHotkeyService globalHotkeyService)
+        public OpenAIControlViewModel(ILocalSettings settingsService, IOpenAIAPIService openAIService, IGlobalHotkeyService globalHotkeyService, ILoggingService logger)
         {
             _settingsService = settingsService;
             _globalHotkeyService = globalHotkeyService;
+            _logger = logger;
 
             Main_Hotkey_Toggled = false;
             Api_Key = _settingsService.Load<string>("ApiKey");
@@ -194,7 +195,7 @@ namespace wingman.ViewModels
                 {
                     _settingsService.TrySave("ApiKey", value);
                     IsEnabled = IsApiKeyValid();
-                    Ioc.Default.GetRequiredService<IOpenAIAPIService>();
+                    _logger.LogInfo("New OpenAI key has a valid format.");
                 }
                 OnPropertyChanged(nameof(ApiKeymessage));
             }

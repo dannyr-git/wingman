@@ -7,5 +7,6 @@ namespace wingman.Interfaces
     {
         Task<string?> GetResponse(string prompt);
         Task<string?> GetWhisperResponse(StorageFile inmp3);
+        Task<bool> IsApiKeyValid();
     }
 }
