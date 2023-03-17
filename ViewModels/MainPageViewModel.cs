@@ -72,7 +72,7 @@ namespace wingman.ViewModels
                     if (selectedProcess != null)
                     {
                         // Set the process in the StdInService
-                        _stdinService.SetProcess(selectedProcess);
+                        //_stdinService.SetProcess(selectedProcess);
                     }
                 }
             }

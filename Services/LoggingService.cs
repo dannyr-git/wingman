@@ -45,13 +45,21 @@ namespace wingman.Services
     {
         private readonly object _lock = new object();
         private readonly string _logFile;
-        private string _logBook = $"Log Start: {DateTime.Now:yyyy-MM-dd HH:mm:ss}\r\n";
-        private VerboseLevel _verboseLevel = VerboseLevel.Verbose;
+        private string _logBook = $"Welcome to Wingman!\r\n";
+        private VerboseLevel _verboseLevel = VerboseLevel.Normal;
 
         public event EventHandler<string> UIOutputHandler;
 
         public LoggingService()
         {
+            _logBook += $"\r\n";
+            _logBook += $"1. Make sure you enter a valid OpenAI key.  I can only validate format, not validity.\r\n";
+            _logBook += $"2. Press and hold your hotkey to record, let go when you're done speaking.\r\n";
+            _logBook += $"3. Main+Clipboard and Modal+Clipboard means whatever is on your clipboard will be appended to the voice prompt you are sending\r\n";
+            _logBook += $"4. To configure a hotkey, click the button + hit a hotkey\r\n";
+            _logBook += $"Please go to https://github.com/dannyr-git/wingman with issues/requests";
+            _logBook += $"Log Start: {DateTime.Now:yyyy-MM-dd HH:mm:ss}\r\n";
+
             string logDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Wingman");
             Directory.CreateDirectory(logDirectory);
             _logFile = Path.Combine(logDirectory, $"Wingman{DateTime.Now:yyyyMMdd_HHmmss}.log");
@@ -120,12 +128,6 @@ namespace wingman.Services
             WriteLogEntry(logEntry);
 
             UIOutputHandler?.Invoke(this, _logBook);
-            /*
-            if (_verboseLevel == VerboseLevel.Verbose || level != "INFO")
-            {
-                UIOutputHandler?.Invoke(this, FormatLogEntry(logEntry));
-            }
-            */
         }
 
         private void WriteLogEntry(LogEntry logEntry)
@@ -135,7 +137,11 @@ namespace wingman.Services
             lock (_lock)
             {
                 File.AppendAllText(_logFile, formattedMessage + Environment.NewLine);
-                _logBook += formattedMessage + Environment.NewLine;
+
+                if (_verboseLevel == VerboseLevel.Verbose)
+                    _logBook += formattedMessage + Environment.NewLine;
+                else if (logEntry.Level != "DEBUG" && logEntry.Level != "EXCEPTION")
+                    _logBook += $"{logEntry.Timestamp:HH:mm:ss} [{logEntry.Level}] {logEntry.Message}" + Environment.NewLine;
             }
         }
 

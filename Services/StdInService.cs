@@ -46,30 +46,33 @@ namespace wingman.Services
             InputInjector inputInjector = InputInjector.TryCreate();
             // Save whatever is on the clipboard
             var savedClipboard = await ClipboardHelper.GetTextAsync();
+            await Task.Delay(100);
 
             Logger.LogDebug("Leveraging Clipboard to send string: " + str);
             await ClipboardHelper.SetTextAsync(str);
-
+            await Task.Delay(100);
 
             // Paste the clipboard out
-            await Task.Run(() => inputInjector.InjectKeyboardInput(new[] {
+
+            inputInjector.InjectKeyboardInput(new[] {
                 new InjectedInputKeyboardInfo
                 {
-            VirtualKey = (ushort) VirtualKey.Control,
-            KeyOptions = InjectedInputKeyOptions.None
-        },
-        new InjectedInputKeyboardInfo
-        {
-            VirtualKey = (ushort) VirtualKey.V,
-            KeyOptions = InjectedInputKeyOptions.None
-        },
-        new InjectedInputKeyboardInfo
-        {
-            VirtualKey = (ushort) VirtualKey.Control,
-            KeyOptions = InjectedInputKeyOptions.KeyUp
-        }
-    }));
+                    VirtualKey = (ushort) VirtualKey.Control,
+                    KeyOptions = InjectedInputKeyOptions.None
+                },
+                new InjectedInputKeyboardInfo
+                {
+                    VirtualKey = (ushort) VirtualKey.V,
+                    KeyOptions = InjectedInputKeyOptions.None
+                },
+                new InjectedInputKeyboardInfo
+                {
+                    VirtualKey = (ushort) VirtualKey.Control,
+                    KeyOptions = InjectedInputKeyOptions.KeyUp
+                }
+            });
 
+            await Task.Delay(100);
             await ClipboardHelper.SetTextAsync(savedClipboard);
         }
 

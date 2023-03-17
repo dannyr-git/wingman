@@ -18,13 +18,14 @@
             <TextBox
                 x:Name="LogTextBox"
                 Grid.Row="6"
-                Height="300"
+                Height="200"
                 local:TextBoxBehavior.AutoScroll="True"
                 AcceptsReturn="True"
                 FontFamily="Consolas"
                 IsReadOnly="True"
                 Text="{Binding LogText, Mode=OneWay}"
-                TextWrapping="Wrap" />
+                TextWrapping="Wrap" 
+                />
         </ScrollViewer>
     </Grid>
 </Page>

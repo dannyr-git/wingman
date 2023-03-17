@@ -63,7 +63,6 @@ namespace wingman.Services
                 Messages = new List<ChatMessage>
                 {
                     ChatMessage.FromSystem(settingsService.Load<string>("System_Preprompt")),
-                    //ChatMessage.FromSystem("You are a programming assistant.  You are only allowed to respond with the raw code.  Do not generate explanations.  Do not preface.  Do not follow-up after the code."),
                     ChatMessage.FromUser(prompt),
                 },
                 Model = Models.ChatGpt3_5Turbo,
@@ -75,8 +74,7 @@ namespace wingman.Services
             if (completionResult.Successful)
             {
                 Logger.LogDebug("OpenAI API Response Received");
-                // for davinci model :
-                // var maid = completionResult.Choices.First().Text;
+
 
                 var maid = completionResult.Choices.First().Message.Content;
                 var lines = maid.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
@@ -161,7 +159,7 @@ namespace wingman.Services
 
             if (completionResult.Successful)
             {
-                Logger.LogInfo($"Whisper API Response: " + completionResult.Text);
+                //Logger.LogInfo($"Whisper API Response: " + completionResult.Text);  // sent elsewhere for now
                 return completionResult.Text;
             }
             else

@@ -35,6 +35,32 @@ namespace wingman.Helpers
 
     public static class Extensions
     {
+        public static void HideTitleBar(this Window window)
+        {
+            AppWindow appWindow = window.GetAppWindow();
+            appWindow.TitleBar.ExtendsContentIntoTitleBar = true;
+            appWindow.TitleBar.ButtonForegroundColor = Microsoft.UI.Colors.Transparent;
+            appWindow.TitleBar.ButtonBackgroundColor = Microsoft.UI.Colors.Transparent;
+            appWindow.TitleBar.ButtonInactiveBackgroundColor = Microsoft.UI.Colors.Transparent;
+            appWindow.TitleBar.ButtonHoverBackgroundColor = Microsoft.UI.Colors.Transparent;
+            appWindow.TitleBar.ButtonPressedBackgroundColor = Microsoft.UI.Colors.Transparent;
+            appWindow.TitleBar.ButtonInactiveForegroundColor = Microsoft.UI.Colors.Transparent;
+            appWindow.TitleBar.ButtonHoverForegroundColor = Microsoft.UI.Colors.Transparent;
+            appWindow.TitleBar.ButtonPressedForegroundColor = Microsoft.UI.Colors.Transparent;
+            appWindow.TitleBar.ForegroundColor = Microsoft.UI.Colors.Transparent;
+            appWindow.TitleBar.IconShowOptions = IconShowOptions.HideIconAndSystemMenu;
+            appWindow.TitleBar.PreferredHeightOption = 0;
+
+            if (appWindow.Presenter is OverlappedPresenter overlappedPresenter)
+            {
+                overlappedPresenter.IsMinimizable = false;
+                overlappedPresenter.IsMaximizable = false;
+                overlappedPresenter.SetBorderAndTitleBar(false, false);
+            }
+        }
+
+
+
         public static AppWindow GetAppWindow(this Window window)
         {
             IntPtr windowHandle = WindowNative.GetWindowHandle(window);
@@ -46,6 +72,19 @@ namespace wingman.Helpers
         {
             SizeInt32 size = window.GetAppWindow().Size;
             return (size.Width, size.Height);
+        }
+
+        public static void Hide(this Window window)
+        {
+            AppWindow appWindow = window.GetAppWindow();
+            appWindow.Hide();
+        }
+
+        public static void SetWindowPosition(this Window window, int x, int y)
+        {
+            AppWindow appWindow = window.GetAppWindow();
+            PointInt32 position = new(x, y);
+            appWindow.Move(position);
         }
 
         public static void SetWindowSize(this Window window, int width, int height)
@@ -62,6 +101,8 @@ namespace wingman.Helpers
             if (appWindow.Presenter is OverlappedPresenter overlappedPresenter)
             {
                 overlappedPresenter.IsResizable = value;
+                overlappedPresenter.IsMaximizable = value;
+
                 return;
             }
 

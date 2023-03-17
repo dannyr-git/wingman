@@ -20,7 +20,6 @@ namespace wingman.Services
         private readonly IWindowingService windowingService;
         private readonly OpenAIControlViewModel openAIControlViewModel;
         private readonly MediaPlayer mediaPlayer;
-        private readonly Stopwatch stopwatch = new Stopwatch();
         private readonly Stopwatch micQueueDebouncer = new Stopwatch();
         private bool isDisposed;
         private bool isRecording;
@@ -110,19 +109,23 @@ namespace wingman.Services
             {
                 return await Task.FromResult(true);
             }
+#if DEBUG
             Logger.LogDebug("Hotkey Down Caught");
-            stopwatch.Restart();
+#else
+            Logger.LogInfo("Recording has started ...");
+#endif
+            micQueueDebouncer.Restart();
             await PlayChime("normalchime");
             await micService.StartRecording();
             isRecording = true;
             return await action();
         }
 
-        private async Task<bool> HandleHotkeyRelease(Func<string, Task<bool>> action)
+        private async Task<bool> HandleHotkeyRelease(Func<string, Task<bool>> action, string callername)
         {
             if (!isRecording || isProcessing)
             {
-                return await Task.FromResult(false);
+                return await Task.FromResult(true);
             }
 
             try
@@ -131,17 +134,24 @@ namespace wingman.Services
                 isProcessing = true;
                 await MouseWait(true);
                 await PlayChime("lowchime");
-                stopwatch.Stop();
-                var elapsed = stopwatch.Elapsed;
+                micQueueDebouncer.Stop();
+                var elapsed = micQueueDebouncer.Elapsed;
 
-                await Task.Delay(500);
+#if DEBUG
                 Logger.LogDebug("Stop recording");
+#else
+                Logger.LogInfo("Stopping recording...");
+#endif
+                if (elapsed.TotalSeconds < 1)
+                    await Task.Delay(1000);
+
                 var file = await micService.StopRecording();
-                await Task.Delay(250);
+                await Task.Delay(100);
                 isRecording = false;
 
                 if (elapsed.TotalSeconds < 2)
                 {
+                    Logger.LogError("Recording was too short.");
                     return await Task.FromResult(true);
                 }
 
@@ -149,11 +159,38 @@ namespace wingman.Services
                 {
                     throw new Exception("File is null");
                 }
+#if DEBUG
+Logger.LogDebug("Send recording to Whisper API");
+#else
+                Logger.LogInfo("Initiating Whisper API request...");
+#endif
+                windowingService.UpdateStatus("Waiting for Whisper API Response... (This can lag)");
 
-                // >>> START: THIS SHOULD BE IN ANOTHER THREAD, RIGHT?
-                Logger.LogDebug("Send recording to Whisper API");
-                var prompt = await chatGPTService.GetWhisperResponse(file);
-                Logger.LogDebug("WhisperAPI Prompt Received: " + prompt);
+                var whisperResponseTask = chatGPTService.GetWhisperResponse(file);
+                var taskwatch = new Stopwatch();
+                taskwatch.Start();
+
+
+                while (!whisperResponseTask.IsCompleted)
+                {
+                    await Task.Delay(50);
+                    if (taskwatch.Elapsed.TotalSeconds >= 3)
+                    {
+                        taskwatch.Restart();
+                        Logger.LogInfo("   Still waiting...");
+                    }
+                }
+                var prompt = await whisperResponseTask;
+                taskwatch.Stop();
+
+                windowingService.UpdateStatus("Whisper API Responded...");
+#if DEBUG
+Logger.LogDebug("WhisperAPI Prompt Received: " + prompt);
+#else
+                Logger.LogInfo("Whisper API responded: " + prompt);
+#endif
+
+
 
                 if (string.IsNullOrEmpty(prompt))
                 {
@@ -163,15 +200,19 @@ namespace wingman.Services
 
                 string? cbstr = "";
 
-                if (settingsService.Load<bool>("Append_Clipboard"))
+                if ((settingsService.Load<bool>("Append_Clipboard") && callername=="MAIN_HOTKEY") || (settingsService.Load<bool>("Append_Clipboard_Modal") && callername=="MODAL_HOTKEY"))
                 {
+#if DEBUG
                     Logger.LogDebug("Append_Clipboard is true.");
+#else
+                    Logger.LogInfo("Appending clipboard to prompt...");
+#endif
                     cbstr = await ClipboardHelper.GetTextAsync();
                     if (!string.IsNullOrEmpty(cbstr))
                     {
-                        prompt = PromptCleaners.TrimWhitespaces(cbstr);
-                        prompt = PromptCleaners.TrimNewlines(cbstr);
-                        prompt += cbstr;
+                        cbstr = PromptCleaners.TrimWhitespaces(cbstr);
+                        cbstr = PromptCleaners.TrimNewlines(cbstr);
+                        prompt += " " + cbstr;
                     }
                 }
 
@@ -189,8 +230,29 @@ namespace wingman.Services
                 string response;
                 try
                 {
+                    windowingService.UpdateStatus("Waiting for GPT response...");
+#if DEBUG
                     Logger.LogDebug("Sending prompt to OpenAI API: " + prompt);
-                    response = await chatGPTService.GetResponse(prompt);
+#else
+                    Logger.LogInfo("Waiting for GPT Response... (This can lag)");
+#endif
+
+                    var responseTask = chatGPTService.GetResponse(prompt);
+                    taskwatch = Stopwatch.StartNew();
+                    while (!responseTask.IsCompleted)
+                    {
+                        await Task.Delay(50);
+                        if (taskwatch.Elapsed.TotalSeconds >= 3)
+                        {
+                            taskwatch.Restart();
+                            Logger.LogInfo("   Still waiting...");
+                        }
+                    }
+                    response = await responseTask;
+                    taskwatch.Stop();
+
+                    windowingService.UpdateStatus("Response Received ...");
+                    Logger.LogInfo("Received response from GPT...");
                 }
                 catch (Exception e)
                 {
@@ -199,7 +261,6 @@ namespace wingman.Services
                 }
 
                 await action(response);
-                // >>> STOP: THIS SHOULD BE IN ANOTHER THREAD, RIGHT?
             }
             catch (Exception e)
             {
@@ -228,19 +289,23 @@ namespace wingman.Services
             // return
             await HandleHotkeyRelease(async (response) =>
             {
+#if DEBUG
                 Logger.LogDebug("Returning");
-                await MouseWait(false);
+#else
+                Logger.LogInfo("Sending response to STDOUT...");
+#endif
                 await stdInService.SendWithClipboardAsync(response);
-                micQueueDebouncer.Restart();
-                isProcessing = false;
                 return await Task.FromResult(true);
-            });
+            }, "MAIN_HOTKEY");
+
+            await MouseWait(false);
+            micQueueDebouncer.Restart();
+            isProcessing = false;
+            windowingService.ForceStatusHide();
         }
 
-        //private async Task<bool> Events_OnModalHotkey()
         private async void Events_OnModalHotkey(object sender, EventArgs e)
         {
-            // return
             await HandleHotkey(async () =>
             {
                 // In case hotkeys end up being snowflakes
@@ -254,12 +319,20 @@ namespace wingman.Services
             //return
             await HandleHotkeyRelease(async (response) =>
             {
-                await MouseWait(false);
+                Logger.LogInfo("Adding response to Clipboard...");
+                await ClipboardHelper.SetTextAsync(response);
+#if DEBUG
+                Logger.LogDebug("Returning");
+#else
+                Logger.LogInfo("Sending response via Modal...");
+#endif
                 await windowingService.CreateModal(response);
-                micQueueDebouncer.Restart();
-                isProcessing = false;
                 return await Task.FromResult(true);
-            });
+            }, "MODAL_HOTKEY");
+
+            await MouseWait(false);
+            micQueueDebouncer.Restart();
+            isProcessing = false;
         }
     }
 }

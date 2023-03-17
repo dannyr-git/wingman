@@ -20,7 +20,7 @@
                 Height="30"
                 Margin="2,0,10,0"
                 HorizontalAlignment="Left"
-                Source="../Assets/wingman.png" />
+                Source="../Assets/wingman_inverse.png" />
             <TextBlock
                 x:Name="MainAppTitleTextBlock"
                 Grid.Row="0"
@@ -29,7 +29,7 @@
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
                 FontWeight="Bold"
-                Foreground="Black"
+                Foreground="White"
                 IsColorFontEnabled="True"
                 Text="Wingman"
                 TextWrapping="NoWrap" />

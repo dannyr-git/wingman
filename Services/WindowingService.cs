@@ -78,5 +78,23 @@ namespace wingman.Interfaces
             Logger.LogDebug("Modal closed.");
         }
 
+        public event EventHandler<string>? EventStatusChanged;
+        public event EventHandler? EventForceStatusHide;
+
+        public void ForceStatusHide()
+        {
+            if (EventForceStatusHide != null && !_disposed && !_disposing)
+            {
+                EventForceStatusHide(this, EventArgs.Empty);
+            }
+        }
+
+        public void UpdateStatus(string currentStatus)
+        {
+            if (EventStatusChanged != null && !_disposed && !_disposing)
+                EventStatusChanged?.Invoke(this, currentStatus);
+        }
+
+
     }
 }

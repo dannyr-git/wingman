@@ -53,6 +53,7 @@ namespace wingman
         {
             base.OnLaunched(args);
 
+            Ioc.Default.GetRequiredService<StatusWindow>(); // make sure events are initialized
             Ioc.Default.GetRequiredService<IEventHandlerService>(); // make sure events are initialized
 
             IAppActivationService appWindowService = Ioc.Default.GetRequiredService<IAppActivationService>();
@@ -84,6 +85,7 @@ namespace wingman
                         .AddSingleton<MainPageViewModel>()
                         .AddSingleton<FooterViewModel>()
                         // Views
+                        .AddSingleton<StatusWindow>()
                         .AddSingleton<MainWindow>();
 
                 })

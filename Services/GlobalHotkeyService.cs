@@ -97,31 +97,6 @@ namespace wingman.Services
         private Dictionary<string, Keys> specialKeysMap = new Dictionary<string, Keys>
         {
             { "`", Keys.Oem3 }
-/*
- * These need testing
- * 
-    { ";", Keys.OemSemicolon },
-    { ":", Keys.Oem1 },
-    { "+", Keys.Oemplus },
-    { ",", Keys.Oemcomma },
-    { "-", Keys.OemMinus },
-    { ".", Keys.OemPeriod },
-    { "/", Keys.OemQuestion },
-    { "?", Keys.Oem2 },
-    { "`", Keys.Oem3 },
-    { "~", Keys.Oemtilde },
-    { "[", Keys.OemOpenBrackets },
-    { "{", Keys.Oem4 },
-    { "\\", Keys.OemPipe },
-    { "|", Keys.Oem5 },
-    { "]", Keys.OemCloseBrackets },
-    { "}", Keys.Oem6 },
-    { "'", Keys.OemQuotes },
-    { "\"", Keys.Oem7 },
-    { "Oem8", Keys.Oem8 }, // No specific character representation
-    { "<", Keys.OemBackslash },
-    { ">", Keys.Oem102 }
-*/
         };
 
         private bool IsHotkeyCombinationPressed(string hotkeyCombination, KeyEventArgs e)
@@ -172,41 +147,84 @@ namespace wingman.Services
             KeyUp
         }
 
+
         public async Task ConfigureHotkeyAsync(Func<string, bool> keyConfigurationCallback)
         {
             _keyConfigurationCallback = keyConfigurationCallback;
 
+            // Unregister the original KeyDown and KeyUp listeners.
             _hook.KeyDown -= Hook_KeyDown;
             _hook.KeyUp -= Hook_KeyUp;
+
+            // Register the configuration KeyDown and KeyUp listeners.
             _hook.KeyDown += Hook_KeyDown_Configuration;
+            _hook.KeyUp += Hook_KeyUp_Configuration;
 
             while (_keyConfigurationCallback != null)
             {
                 await Task.Delay(500);
             }
 
+            // Unregister the configuration KeyDown and KeyUp listeners.
             _hook.KeyDown -= Hook_KeyDown_Configuration;
+            _hook.KeyUp -= Hook_KeyUp_Configuration;
+
+            // Re-register the original KeyDown and KeyUp listeners.
             _hook.KeyDown += Hook_KeyDown;
             _hook.KeyUp += Hook_KeyUp;
         }
 
         private void Hook_KeyDown_Configuration(object sender, KeyEventArgs e)
         {
-            var key = e.KeyCode.ToString();
+            ModifierKeys currentModifiers = ModifierKeys.None;
+            if (e.Control) currentModifiers |= ModifierKeys.Control;
+            if (e.Shift) currentModifiers |= ModifierKeys.Shift;
+            if (e.Alt) currentModifiers |= ModifierKeys.Alt;
 
-            if (key == "Escape" || string.IsNullOrEmpty(key))
+            if ((currentModifiers != ModifierKeys.None && !IsModifierKey(e.KeyCode)) || (currentModifiers == ModifierKeys.None && !IsModifierKey(e.KeyCode)))
             {
+                var hkstr = BuildHotkeyString(e);
+                _keyConfigurationCallback?.Invoke(hkstr);
                 _keyConfigurationCallback = null;
-                return;
-            }
-
-            var result = _keyConfigurationCallback(key);
-
-            if (result)
-            {
-                _keyConfigurationCallback = null;
+                e.Handled = true;
             }
         }
+
+        private void Hook_KeyUp_Configuration(object sender, KeyEventArgs e)
+        {
+
+        }
+
+        private bool IsModifierKey(Keys keyCode)
+        {
+            return keyCode == Keys.ControlKey || keyCode == Keys.ShiftKey || keyCode == Keys.Menu || keyCode == Keys.LMenu || keyCode == Keys.RMenu
+                || keyCode == Keys.LShiftKey || keyCode == Keys.RShiftKey || keyCode == Keys.LControlKey || keyCode == Keys.RControlKey;
+        }
+
+        private string BuildHotkeyString(KeyEventArgs e)
+        {
+            List<string> keyParts = new List<string>();
+
+            if (e.Control) keyParts.Add("Ctrl");
+            if (e.Shift) keyParts.Add("Shift");
+            if (e.Alt) keyParts.Add("Alt");
+
+            string mainKey = specialKeysMap.FirstOrDefault(x => x.Value == e.KeyCode).Key;
+            if (string.IsNullOrEmpty(mainKey))
+            {
+                mainKey = e.KeyCode.ToString();
+            }
+
+            keyParts.Add(mainKey);
+
+            return string.Join("+", keyParts);
+        }
+
+
+
+
+
+
 
     }
 }

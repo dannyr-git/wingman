@@ -11,8 +11,6 @@ namespace wingman.Views
             InitializeComponent();
             ViewModel = Ioc.Default.GetRequiredService<MainPageViewModel>();
             DataContext = ViewModel;
-
-
         }
 
         public MainPageViewModel ViewModel { get; }

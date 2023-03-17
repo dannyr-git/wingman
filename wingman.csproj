@@ -50,6 +50,7 @@
   <ItemGroup>
     <None Remove="aggr.ps1" />
     <None Remove="Views\Footer.xaml" />
+    <None Remove="Views\StatusWindow.xaml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="wingman.ico" />
@@ -80,6 +81,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Update="Views\Footer.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\StatusWindow.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>

@@ -130,7 +130,6 @@ namespace wingman.ViewModels
             }
         }
 
-
         private bool NativeKeyboard_OnKeyDown(string input)
         {
             if (input == "Escape" || String.IsNullOrEmpty(input))
