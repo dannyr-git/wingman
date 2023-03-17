@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Linq;
 using wingman.Interfaces;
 using wingman.Services;
+using wingman.Updates;
 using wingman.ViewModels;
 using wingman.Views;
 
@@ -15,6 +16,7 @@ namespace wingman
     public partial class App : Application, IDisposable
     {
         private readonly IHost _host;
+        private readonly AppUpdater _appUpdater;
 
         public App()
         {
@@ -22,6 +24,8 @@ namespace wingman
             UnhandledException += App_UnhandledException;
             _host = BuildHost();
             Ioc.Default.ConfigureServices(_host.Services);
+
+            _appUpdater = new AppUpdater();
         }
 
         public void Dispose()
@@ -60,6 +64,8 @@ namespace wingman
             appWindowService.Activate(args);
             MainWindow mw = Ioc.Default.GetRequiredService<MainWindow>();
             mw.SetApp(this);
+
+            _ = _appUpdater.CheckForUpdatesAsync(mw.Dispatcher);
         }
 
         private static IHost BuildHost() => Host.CreateDefaultBuilder()

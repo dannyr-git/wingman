@@ -1,43 +1,55 @@
-﻿using System;
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Windows.Services.Store;
 using Windows.UI.Core;
+using wingman.Interfaces;
 
-namespace wingman.AppUpdater
+namespace wingman.Updates
 {
     public class AppUpdater
     {
         private StoreContext context;
+        private ILoggingService Logger;
 
         public AppUpdater()
         {
             context = StoreContext.GetDefault();
+
+            Logger = Ioc.Default.GetRequiredService<ILoggingService>();
         }
 
         public async Task CheckForUpdatesAsync(CoreDispatcher dispatcher)
         {
+            Logger.LogInfo("Checking for updates...");
             IReadOnlyList<StorePackageUpdate> storePackageUpdates = await context.GetAppAndOptionalStorePackageUpdatesAsync();
 
             if (storePackageUpdates.Count > 0)
             {
+                Logger.LogInfo("Updates available.");
                 if (!context.CanSilentlyDownloadStorePackageUpdates)
                 {
+                    Logger.LogError("Unable to silently download store packages");
                     return;
                 }
 
+                Logger.LogInfo("Downloading updates.");
                 StorePackageUpdateResult downloadResult = await context.TrySilentDownloadStorePackageUpdatesAsync(storePackageUpdates);
 
                 switch (downloadResult.OverallState)
                 {
                     case StorePackageUpdateState.Completed:
+                        Logger.LogInfo("Updates downloaded.");
                         if (IsNowAGoodTimeToRestartApp())
                         {
+                            Logger.LogInfo("Installing updates.");
                             await InstallUpdate(storePackageUpdates);
                         }
                         else
                         {
                             // Retry/reschedule the installation later.
+                            Logger.LogInfo("Retrying later.");
                             RetryInstallLater(dispatcher);
                         }
                         break;
@@ -54,6 +66,10 @@ namespace wingman.AppUpdater
                         break;
                 }
             }
+            else
+            {
+                Logger.LogInfo("No Updates available.");
+            }
         }
 
         private async Task InstallUpdate(IReadOnlyList<StorePackageUpdate> storePackageUpdates)
@@ -65,7 +81,9 @@ namespace wingman.AppUpdater
                 case StorePackageUpdateState.Canceled:
                 case StorePackageUpdateState.ErrorLowBattery:
                 case StorePackageUpdateState.OtherError:
-                    RetryInstallLater();
+                    Logger.LogError("Installation Failed: " + installResult.OverallState.ToString());
+                    Logger.LogError("This could be broken.  Try uninstalling/reinstalling from store");
+                    //RetryInstallLater();
                     break;
 
                 default:
