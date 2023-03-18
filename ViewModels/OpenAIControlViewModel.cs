@@ -2,7 +2,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using System;
-using System.Windows.Input;
 using wingman.Interfaces;
 
 namespace wingman.ViewModels
@@ -12,7 +11,6 @@ namespace wingman.ViewModels
         private readonly ILocalSettings _settingsService;
         private readonly IGlobalHotkeyService _globalHotkeyService;
         private readonly ILoggingService _logger;
-        public ICommand ApplyKeyAndRestartCommand { get; private set; }
         private string _apikey;
         private bool _keypressed;
 
