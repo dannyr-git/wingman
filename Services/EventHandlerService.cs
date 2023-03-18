@@ -16,7 +16,7 @@ namespace wingman.Services
         private readonly IGlobalHotkeyService globalHotkeyService;
         private readonly IMicrophoneDeviceService micService;
         private readonly IStdInService stdInService;
-        private readonly ILocalSettings settingsService;
+        private readonly ISettingsService settingsService;
         private readonly ILoggingService Logger;
         private readonly IWindowingService windowingService;
         private readonly OpenAIControlViewModel openAIControlViewModel;
@@ -32,7 +32,7 @@ namespace wingman.Services
             IGlobalHotkeyService globalHotkeyService,
             IMicrophoneDeviceService micService,
             IStdInService stdInService,
-            ILocalSettings settingsService,
+            ISettingsService settingsService,
             ILoggingService loggingService,
             IWindowingService windowingService
             )
@@ -51,11 +51,11 @@ namespace wingman.Services
 
         private void Initialize()
         {
-            globalHotkeyService.RegisterHotkeyDown("Main_Hotkey", Events_OnMainHotkey);
-            globalHotkeyService.RegisterHotkeyUp("Main_Hotkey", Events_OnMainHotkeyRelease);
+            globalHotkeyService.RegisterHotkeyDown(WingmanSettings.Main_Hotkey, Events_OnMainHotkey);
+            globalHotkeyService.RegisterHotkeyUp(WingmanSettings.Main_Hotkey, Events_OnMainHotkeyRelease);
 
-            globalHotkeyService.RegisterHotkeyDown("Modal_Hotkey", Events_OnModalHotkey);
-            globalHotkeyService.RegisterHotkeyUp("Modal_Hotkey", Events_OnModalHotkeyRelease);
+            globalHotkeyService.RegisterHotkeyDown(WingmanSettings.Modal_Hotkey, Events_OnModalHotkey);
+            globalHotkeyService.RegisterHotkeyUp(WingmanSettings.Modal_Hotkey, Events_OnModalHotkeyRelease);
 
             isDisposed = false;
             isRecording = false;
@@ -68,11 +68,11 @@ namespace wingman.Services
         {
             if (!isDisposed)
             {
-                globalHotkeyService.UnregisterHotkeyDown("Main_Hotkey", Events_OnMainHotkey);
-                globalHotkeyService.UnregisterHotkeyUp("Main_Hotkey", Events_OnMainHotkeyRelease);
+                globalHotkeyService.UnregisterHotkeyDown(WingmanSettings.Main_Hotkey, Events_OnMainHotkey);
+                globalHotkeyService.UnregisterHotkeyUp(WingmanSettings.Main_Hotkey, Events_OnMainHotkeyRelease);
 
-                globalHotkeyService.UnregisterHotkeyDown("Modal_Hotkey", Events_OnModalHotkey);
-                globalHotkeyService.UnregisterHotkeyUp("Modal_Hotkey", Events_OnModalHotkeyRelease);
+                globalHotkeyService.UnregisterHotkeyDown(WingmanSettings.Modal_Hotkey, Events_OnModalHotkey);
+                globalHotkeyService.UnregisterHotkeyUp(WingmanSettings.Modal_Hotkey, Events_OnModalHotkeyRelease);
 
 
 
@@ -201,10 +201,10 @@ Logger.LogDebug("WhisperAPI Prompt Received: " + prompt);
 
                 string? cbstr = "";
 
-                if ((settingsService.Load<bool>("Append_Clipboard") && callername=="MAIN_HOTKEY") || (settingsService.Load<bool>("Append_Clipboard_Modal") && callername=="MODAL_HOTKEY"))
+                if ((settingsService.Load<bool>(WingmanSettings.Append_Clipboard) && callername=="MAIN_HOTKEY") || (settingsService.Load<bool>(WingmanSettings.Append_Clipboard_Modal) && callername=="MODAL_HOTKEY"))
                 {
 #if DEBUG
-                    Logger.LogDebug("Append_Clipboard is true.");
+                    Logger.LogDebug("WingmanSettings.Append_Clipboard is true.");
 #else
                     Logger.LogInfo("Appending clipboard to prompt...");
 #endif

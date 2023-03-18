@@ -8,11 +8,11 @@ namespace wingman.Services
     public class AppActivationService : IAppActivationService, IDisposable
     {
         private readonly MainWindow _mainWindow;
-        private readonly ILocalSettings _settingsService;
+        private readonly ISettingsService _settingsService;
 
         public AppActivationService(
             MainWindow mainWindow,
-            ILocalSettings settingsService)
+            ISettingsService settingsService)
         {
             _mainWindow = mainWindow;
             _settingsService = settingsService;

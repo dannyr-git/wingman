@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using wingman.Interfaces;
-
+using wingman.Services;
 
 namespace wingman.ViewModels
 {
@@ -14,7 +14,7 @@ namespace wingman.ViewModels
     {
         private readonly IEditorService _editorService;
         private readonly IStdInService _stdinService;
-        private readonly ILocalSettings _settingsService;
+        private readonly ISettingsService _settingsService;
         private readonly ILoggingService _loggingService;
 
         private List<string> _stdInTargetOptions = new List<string>();
@@ -24,7 +24,7 @@ namespace wingman.ViewModels
         private string _selectedStdInTarget;
         private string _preprompt;
 
-        public MainPageViewModel(IEditorService editorService, IStdInService stdinService, ILocalSettings settingsService, ILoggingService loggingService)
+        public MainPageViewModel(IEditorService editorService, IStdInService stdinService, ISettingsService settingsService, ILoggingService loggingService)
         {
             _editorService = editorService;
             _stdinService = stdinService;
@@ -32,7 +32,7 @@ namespace wingman.ViewModels
 
             InitializeStdInTargetOptions();
             _settingsService = settingsService;
-            PrePrompt = _settingsService.Load<string>("System_Preprompt");
+            PrePrompt = _settingsService.Load<string>(WingmanSettings.System_Preprompt);
         }
 
         public string PrePrompt
@@ -41,7 +41,7 @@ namespace wingman.ViewModels
             set
             {
                 SetProperty(ref _preprompt, value);
-                _settingsService.Save<string>("System_Preprompt", value);
+                _settingsService.Save<string>(WingmanSettings.System_Preprompt, value);
             }
         }
 

@@ -19,16 +19,16 @@ namespace wingman.Services
     public class OpenAIAPIService : IOpenAIAPIService
     {
         private readonly IOpenAIService? _openAIService;
-        private readonly ILocalSettings settingsService;
+        private readonly ISettingsService settingsService;
         private readonly ILoggingService Logger;
-        private string _apikey;
-        private bool _disposed;
+        private readonly string _apikey;
+        private readonly bool _disposed;
 
-        public OpenAIAPIService(ILocalSettings settingsService, ILoggingService logger)
+        public OpenAIAPIService(ISettingsService settingsService, ILoggingService logger)
         {
             this.settingsService = settingsService;
             this.Logger = logger;
-            _apikey = settingsService.Load<string>("ApiKey");
+            _apikey = settingsService.Load<string>(WingmanSettings.ApiKey);
 
             if (String.IsNullOrEmpty(_apikey))
             {
@@ -62,7 +62,7 @@ namespace wingman.Services
             {
                 Messages = new List<ChatMessage>
                 {
-                    ChatMessage.FromSystem(settingsService.Load<string>("System_Preprompt")),
+                    ChatMessage.FromSystem(settingsService.Load<string>(WingmanSettings.System_Preprompt)),
                     ChatMessage.FromUser(prompt),
                 },
                 Model = Models.ChatGpt3_5Turbo,
@@ -84,9 +84,9 @@ namespace wingman.Services
                 Logger.LogDebug(dbgstr);
 
                 maid = PromptCleaners.CleanBlockIdentifiers(maid);
-                if (settingsService.Load<bool>("Trim_Whitespaces"))
+                if (settingsService.Load<bool>(WingmanSettings.Trim_Whitespaces))
                     maid = PromptCleaners.TrimWhitespaces(maid);
-                if (settingsService.Load<bool>("Trim_Newlines"))
+                if (settingsService.Load<bool>(WingmanSettings.Trim_Newlines))
                     maid = PromptCleaners.TrimNewlines(maid);
                 return maid;
             }

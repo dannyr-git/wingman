@@ -10,7 +10,7 @@ namespace wingman.ViewModels
 {
     public class FooterViewModel : ObservableObject, IDisposable
     {
-        private readonly ILocalSettings _settingsService;
+        private readonly ISettingsService _settingsService;
         private readonly ILoggingService _loggingService;
 
         private readonly DispatcherQueue _dispatcherQueue;
@@ -20,7 +20,7 @@ namespace wingman.ViewModels
         private bool _disposed = false;
         private bool _disposing = false;
 
-        public FooterViewModel(ILocalSettings settingsService, ILoggingService loggingService)
+        public FooterViewModel(ISettingsService settingsService, ILoggingService loggingService)
         {
             _settingsService = settingsService;
             _loggingService = loggingService;

@@ -11,23 +11,23 @@ namespace wingman.Services
     public class GlobalHotkeyService : IGlobalHotkeyService
     {
         private readonly IKeyboardMouseEvents _hook;
-        private readonly Dictionary<string, EventHandler> _hotkeyUpHandlers;
-        private readonly Dictionary<string, EventHandler> _hotkeyDownHandlers;
-        private readonly ILocalSettings _settingsService;
+        private readonly Dictionary<WingmanSettings, EventHandler> _hotkeyUpHandlers;
+        private readonly Dictionary<WingmanSettings, EventHandler> _hotkeyDownHandlers;
+        private readonly ISettingsService _settingsService;
         private Func<string, bool> _keyConfigurationCallback;
 
-        public GlobalHotkeyService(ILocalSettings settingsService)
+        public GlobalHotkeyService(ISettingsService settingsService)
         {
             _hook = Hook.GlobalEvents();
-            _hotkeyUpHandlers = new Dictionary<string, EventHandler>();
-            _hotkeyDownHandlers = new Dictionary<string, EventHandler>();
+            _hotkeyUpHandlers = new Dictionary<WingmanSettings, EventHandler>();
+            _hotkeyDownHandlers = new Dictionary<WingmanSettings, EventHandler>();
             _settingsService = settingsService;
 
             _hook.KeyDown += Hook_KeyDown;
             _hook.KeyUp += Hook_KeyUp;
         }
 
-        public void RegisterHotkeyUp(string settingsKey, EventHandler handler)
+        public void RegisterHotkeyUp(WingmanSettings settingsKey, EventHandler handler)
         {
             if (!_hotkeyUpHandlers.ContainsKey(settingsKey))
             {
@@ -36,7 +36,7 @@ namespace wingman.Services
             _hotkeyUpHandlers[settingsKey] += handler;
         }
 
-        public void RegisterHotkeyDown(string settingsKey, EventHandler handler)
+        public void RegisterHotkeyDown(WingmanSettings settingsKey, EventHandler handler)
         {
             if (!_hotkeyDownHandlers.ContainsKey(settingsKey))
             {
@@ -45,7 +45,7 @@ namespace wingman.Services
             _hotkeyDownHandlers[settingsKey] += handler;
         }
 
-        public void UnregisterHotkeyUp(string settingsKey, EventHandler handler)
+        public void UnregisterHotkeyUp(WingmanSettings settingsKey, EventHandler handler)
         {
             if (_hotkeyUpHandlers.ContainsKey(settingsKey))
             {
@@ -53,7 +53,7 @@ namespace wingman.Services
             }
         }
 
-        public void UnregisterHotkeyDown(string settingsKey, EventHandler handler)
+        public void UnregisterHotkeyDown(WingmanSettings settingsKey, EventHandler handler)
         {
             if (_hotkeyDownHandlers.ContainsKey(settingsKey))
             {
@@ -71,7 +71,7 @@ namespace wingman.Services
             HandleKeyEvent(e, _hotkeyUpHandlers);
         }
 
-        private void HandleKeyEvent(KeyEventArgs e, Dictionary<string, EventHandler> handlers)
+        private void HandleKeyEvent(KeyEventArgs e, Dictionary<WingmanSettings, EventHandler> handlers)
         {
             bool isHandled = false;
             foreach (var handlerEntry in handlers)
@@ -94,7 +94,7 @@ namespace wingman.Services
         }
 
 
-        private Dictionary<string, Keys> specialKeysMap = new Dictionary<string, Keys>
+        private readonly Dictionary<string, Keys> specialKeysMap = new Dictionary<string, Keys>
         {
             { "`", Keys.Oem3 }
         };

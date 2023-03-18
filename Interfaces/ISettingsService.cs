@@ -1,10 +1,12 @@
+using wingman.Services;
+
 namespace wingman.Interfaces
 {
-    public interface ILocalSettings
+    public interface ISettingsService
     {
-        T? Load<T>(string key);
-        bool TryLoad<T>(string key, out T? value);
-        void Save<T>(string key, T value);
-        bool TrySave<T>(string key, T value);
+        T? Load<T>(WingmanSettings key);
+        bool TryLoad<T>(WingmanSettings key, out T? value);
+        void Save<T>(WingmanSettings key, T value);
+        bool TrySave<T>(WingmanSettings key, T value);
     }
 }

@@ -80,7 +80,7 @@ namespace wingman
                         .AddSingleton<IMicrophoneDeviceService, MicrophoneDeviceService>()
                         .AddSingleton<IEditorService, EditorService>()
                         .AddSingleton<IStdInService, StdInService>()
-                        .AddSingleton<ILocalSettings, LocalSettingsService>()
+                        .AddSingleton<ISettingsService, SettingsService>()
                         .AddSingleton<IAppActivationService, AppActivationService>()
                         .AddScoped<IOpenAIAPIService, OpenAIAPIService>()
                         // ViewModels   
