@@ -120,11 +120,17 @@ namespace wingman.ViewModels
 
                 if ((sender as ToggleButton).Name == "ConfigMainHotkeyButton")
                 {
-                    Main_Hotkey = _purgatoryhotkey;
+                    if (_purgatoryhotkey != Modal_Hotkey)
+                        Main_Hotkey = _purgatoryhotkey;
+                    else
+                        _logger.LogError("Main hotkey cannot be the same as the modal hotkey.");
                 }
                 else if ((sender as ToggleButton).Name == "ConfigModalHotkeyButton")
                 {
-                    Modal_Hotkey = _purgatoryhotkey;
+                    if (_purgatoryhotkey != Main_Hotkey)
+                        Modal_Hotkey = _purgatoryhotkey;
+                    else
+                        _logger.LogError("Modal hotkey cannot be the same as the main hotkey.");
                 }
 
             }
