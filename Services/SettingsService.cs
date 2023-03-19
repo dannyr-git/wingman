@@ -93,7 +93,10 @@ namespace wingman.Services
                         _loggingService.LogWarning("Old settings file detected, removing...");
                         File.Delete(_settingsFilePath);
                         _loggingService.LogWarning("Importing old values if possible...");
-                        ImportExistingSettings(_settings); InitializeDefaultSettings(); SaveSettings();
+                        ImportExistingSettings(_settings);
+                        EnsureAllSettingsPresent();
+                        //InitializeDefaultSettings();
+                        SaveSettings();
                     }
                     else
                     {
