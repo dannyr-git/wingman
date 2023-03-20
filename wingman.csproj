@@ -48,6 +48,12 @@
     <DebugType>full</DebugType>
   </PropertyGroup>
   <ItemGroup>
+    <Content Remove="Assets\wingman_screenshot.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Assets\wingman_screenshot.png" />
+  </ItemGroup>
+  <ItemGroup>
     <Content Include="wingman.ico" />
   </ItemGroup>
   <!--
