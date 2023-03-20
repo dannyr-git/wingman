@@ -107,6 +107,22 @@ namespace wingman.Helpers
             throw new NotSupportedException($"Always on top is not supported with {appWindow.Presenter.Kind}.");
         }
 
+        public static void SetNeverFocused(this Window window, bool value)
+        {
+            AppWindow appWindow = window.GetAppWindow();
+
+            if (appWindow == null)
+                return;
+
+            if (appWindow.Presenter is OverlappedPresenter overlappedPresenter)
+            {
+
+                return;
+            }
+
+            throw new NotSupportedException($"Cna't support never focused window {appWindow.Presenter.Kind}.");
+        }
+
         public static void SetIsAlwaysOnTop(this Window window, bool value)
         {
             AppWindow appWindow = window.GetAppWindow();

@@ -23,6 +23,7 @@
                 AcceptsReturn="True"
                 FontFamily="Consolas"
                 IsReadOnly="True"
+                IsTabStop="False"
                 Text="{Binding LogText, Mode=OneWay}"
                 TextWrapping="Wrap" />
         </ScrollViewer>

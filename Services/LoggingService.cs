@@ -46,7 +46,11 @@ namespace wingman.Services
         private readonly object _lock = new object();
         private readonly string _logFile;
         private string _logBook = $"Welcome to Wingman!\r\n\r\n";
+#if DEBUG
+        private VerboseLevel _verboseLevel = VerboseLevel.Verbose;
+#else
         private VerboseLevel _verboseLevel = VerboseLevel.Normal;
+#endif
 
         public event EventHandler<string> UIOutputHandler;
 

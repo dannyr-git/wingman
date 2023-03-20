@@ -148,7 +148,7 @@ namespace wingman.Services
                 await Task.Delay(100);
                 isRecording = false;
 
-                if (elapsed.TotalSeconds < 2)
+                if (elapsed.TotalMilliseconds < 1500)
                 {
                     Logger.LogError("Recording was too short.");
                     return await Task.FromResult(true);
@@ -300,6 +300,7 @@ namespace wingman.Services
 #else
                 Logger.LogInfo("Sending response to STDOUT...");
 #endif
+                windowingService.ForceStatusHide();
                 await stdInService.SendWithClipboardAsync(response);
                 return await Task.FromResult(true);
             }, "MAIN_HOTKEY");
@@ -307,7 +308,6 @@ namespace wingman.Services
             await MouseWait(false);
             micQueueDebouncer.Restart();
             isProcessing = false;
-            windowingService.ForceStatusHide();
         }
 
         private async void Events_OnModalHotkey(object sender, EventArgs e)

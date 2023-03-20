@@ -14,12 +14,12 @@ namespace wingman.Views
 {
     public sealed partial class StatusWindow : Window, INotifyPropertyChanged, IDisposable
     {
-        private IWindowingService _windowingService;
+        private readonly IWindowingService _windowingService;
         public event PropertyChangedEventHandler PropertyChanged;
-        private EventHandler<string> WindowingService_StatusChanged;
-        private EventHandler WindowingService_ForceStatusHide;
+        private readonly EventHandler<string> WindowingService_StatusChanged;
+        private readonly EventHandler WindowingService_ForceStatusHide;
         private CancellationTokenSource _timerCancellationTokenSource;
-        private DispatcherQueue _dispatcher;
+        private readonly DispatcherQueue _dispatcher;
         private Window _previousActiveWindow;
         private const int StatusDisplayDurationMilliseconds = 20000;
         private bool _disposed = false;
@@ -118,6 +118,12 @@ namespace wingman.Views
         {
             await _dispatcher.EnqueueAsync(async () =>
             {
+                if (_previousActiveWindow == null && this != Window.Current)
+                    _previousActiveWindow = Window.Current;
+
+                if (this == Window.Current && _previousActiveWindow != this)
+                    _previousActiveWindow.Activate();
+
                 _timerCancellationTokenSource.Cancel();
                 _timerCancellationTokenSource = new CancellationTokenSource();
                 CancellationToken token = _timerCancellationTokenSource.Token;
