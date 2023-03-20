@@ -10,6 +10,16 @@ Wingman enables a user to configure global hotkeys to speak into your microphone
 Code is either output to STDIN or a 'code block' modal
 
 
+## How to use
+
+1. Download the app from the Microsoft Store
+2. Create an OpenAI account and get an API key
+3. Configure your OpenAI API key
+4. Configure your hotkeys
+5. Hold down a hotkey, record your command, and let go! 
+
+`![Wingman Screenshot](Assets/wingman_screenshot.png)`
+
 
 
 ## Deployment
