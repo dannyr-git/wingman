@@ -252,6 +252,11 @@ namespace wingman.Services
                 }
 
             }
+            else
+            {
+                modifiers = ModifierKeys.None;
+                newkey = specialKeysMap.ContainsKey(hotkeyCombination) ? specialKeysMap[hotkeyCombination] : (Keys)Enum.Parse(typeof(Keys), hotkeyCombination, ignoreCase: true);
+            }
 
             // Create the key combination
             return new KeyCombination(newkey, modifiers);

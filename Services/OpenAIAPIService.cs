@@ -163,7 +163,6 @@ namespace wingman.Services
             var fileBytes = await ReadFileBytes(inmp3);
 
             Logger.LogDebug("Sending audio to Whisper API");
-            var sult = new AudioCreateTranscriptionRequest;
             //sult.Prompt
             var completionResult = await _openAIService.Audio.CreateTranscription(new AudioCreateTranscriptionRequest
             {
