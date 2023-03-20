@@ -1,7 +1,5 @@
-using OpenAI.GPT3.ObjectModels;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Text.Json;
 using Windows.ApplicationModel;
@@ -9,54 +7,6 @@ using wingman.Interfaces;
 
 namespace wingman.Services
 {
-    public enum WingmanSettings
-    {
-        [Description("Current version of Wingman")]
-        Version,
-        [Description("Your OpenAI API Key")]
-        ApiKey,
-        [Description("Main Hotkey")]
-        Main_Hotkey,
-        [Description("Modal Hotkey")]
-        Modal_Hotkey,
-        [Description("Toggle: Trim Whitespaces from Response")]
-        Trim_Whitespaces,
-        [Description("Toggle: Trim Newlines from Response")]
-        Trim_Newlines,
-        [Description("Toggle: Append clipboard to main prompt.")]
-        Append_Clipboard,
-        [Description("Toggle: Append clipboard to modal prompt.")]
-        Append_Clipboard_Modal,
-        [Description("OpenAI System Pre-Prompt")]
-        System_Preprompt,
-        //[Description("OpenAI Model to Query")]
-        //OpenAI_Model
-    }
-
-    public enum WingmanSupportedCompletionModels
-    {
-        ChatGPT = Models.Model.ChatGpt3_5Turbo,
-        GPT4 = Models.Model.Gpt_4,
-        GPT4_32K = Models.Model.Gpt_4_32k,
-        Codex_Davinci = Models.Model.CodeDavinciV2,
-    }
-
-    public static class WingmanSettingsDefaults
-    {
-        public const string ApiKey = "sk-INSERTYOUROPENAIKEY";
-        public const string Main_Hotkey = "Alt+`";
-        public const string Modal_Hotkey = "`";
-        public const string Trim_Whitespaces = "false";
-        public const string Trim_Newlines = "false";
-        public const string Append_Clipboard = "false";
-        public const string Append_Clipboard_Modal = "false";
-        public const string System_Preprompt = "You are a programming assistant. You are only allowed to respond with the raw code. Do not generate explanations. Do not preface. Do not follow-up after the code.";
-
-        // Experiments
-        public const string Whisper_Preprompt = "The following transcription will be contextually based around programming, coding, or scripting.  It might include technical language and programming terminology.";
-
-    }
-
 
     public class SettingsService : ISettingsService
     {

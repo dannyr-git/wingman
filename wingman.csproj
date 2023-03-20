@@ -81,6 +81,9 @@
     <ProjectCapability Include="Msix" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Wingman.Core\Wingman.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
     <Page Update="Views\Controls\SettingsControl.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
