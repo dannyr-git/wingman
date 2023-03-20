@@ -34,7 +34,6 @@
                 VerticalAlignment="Stretch"
                 AcceptsReturn="True"
                 CanBeScrollAnchor="True"
-                IsTabStop="False"
                 Text="{Binding PrePrompt, Mode=TwoWay}"
                 TextWrapping="Wrap" />
         </StackPanel>
