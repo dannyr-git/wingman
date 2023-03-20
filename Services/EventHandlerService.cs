@@ -159,7 +159,7 @@ namespace wingman.Services
                     throw new Exception("File is null");
                 }
 #if DEBUG
-Logger.LogDebug("Send recording to Whisper API");
+                Logger.LogDebug("Send recording to Whisper API");
 #else
                 Logger.LogInfo("Initiating Whisper API request...");
 #endif
@@ -189,7 +189,7 @@ Logger.LogDebug("Send recording to Whisper API");
 
                 windowingService.UpdateStatus("Whisper API Responded...");
 #if DEBUG
-Logger.LogDebug("WhisperAPI Prompt Received: " + prompt);
+                Logger.LogDebug("WhisperAPI Prompt Received: " + prompt);
 #else
 #endif
                 if (string.IsNullOrEmpty(prompt))
@@ -237,7 +237,7 @@ Logger.LogDebug("WhisperAPI Prompt Received: " + prompt);
                     {
                         windowingService.UpdateStatus("Waiting for GPT response...");
 #if DEBUG
-                    Logger.LogDebug("Sending prompt to OpenAI API: " + prompt);
+                        Logger.LogDebug("Sending prompt to OpenAI API: " + prompt);
 #else
                         Logger.LogInfo("Waiting for GPT Response... (This can lag)");
 #endif

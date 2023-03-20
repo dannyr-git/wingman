@@ -13,7 +13,7 @@
   <Identity
     Name="51169DalaInc.WingmanAICodingAssistant"
     Publisher="CN=AB834B4E-2474-4030-A208-26BD127DFBF8"
-    Version="0.1.30.0" />
+    Version="0.1.31.0" />
  
   <Properties>
     <DisplayName>Wingman AI Coding Assistant</DisplayName>
