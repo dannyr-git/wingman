@@ -84,6 +84,7 @@ namespace wingman
                         .AddSingleton<IAppActivationService, AppActivationService>()
                         .AddScoped<IOpenAIAPIService, OpenAIAPIService>()
                         // ViewModels   
+                        .AddSingleton<SettingsControlViewModel>()
                         .AddSingleton<AudioInputControlViewModel>()
                         .AddSingleton<OpenAIControlViewModel>()
                         .AddSingleton<MainWindowViewModel>()

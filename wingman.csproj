@@ -49,6 +49,7 @@
   </PropertyGroup>
   <ItemGroup>
     <None Remove="aggr.ps1" />
+    <None Remove="Views\Controls\SettingsControl.xaml" />
     <None Remove="Views\Footer.xaml" />
     <None Remove="Views\StatusWindow.xaml" />
   </ItemGroup>
@@ -80,6 +81,10 @@
     <ProjectCapability Include="Msix" />
   </ItemGroup>
   <ItemGroup>
+    <Page Update="Views\Controls\SettingsControl.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Views\Footer.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>

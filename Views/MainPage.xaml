@@ -17,8 +17,8 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="10" />
+            <RowDefinition Height="50" />
+            <RowDefinition Height="250" />
         </Grid.RowDefinitions>
 
         <StackPanel Grid.Row="0" Orientation="Horizontal">
@@ -34,7 +34,6 @@
                 VerticalAlignment="Stretch"
                 AcceptsReturn="True"
                 CanBeScrollAnchor="True"
-                IsTabStop="False"
                 Text="{Binding PrePrompt, Mode=TwoWay}"
                 TextWrapping="Wrap" />
         </StackPanel>
@@ -61,21 +60,41 @@
         </Border>
 
         <Border
-            Grid.Row="1"
+            Grid.Row="2"
             Margin="0,0,0,0"
             BorderThickness="1,1,1,1" />
-        <!--
-            Width="250"
-            Height="186"
-        -->
 
+
+        <!--  Scaffolding for Settings menu  -->
+        <!--
         <Border
             Grid.Row="6"
             Margin="2"
             VerticalAlignment="Bottom"
             BorderThickness="1">
+
+            <Grid>
+                <StackPanel>
+                    <Button Command="{Binding OpenWindowCommand}" Content="Open Window" />
+                </StackPanel>
+            </Grid>
+
+        </Border>
+        -->
+
+        <!--  Footer  -->
+        <Border
+            Grid.Row="7"
+            Margin="2"
+            VerticalAlignment="Bottom"
+            BorderThickness="1">
             <views:Footer Margin="1" />
         </Border>
+
+        <Border
+            Grid.Row="7"
+            Margin="0,0,0,0"
+            BorderThickness="1,1,1,1" />
 
 
     </Grid>

@@ -1,5 +1,7 @@
+using OpenAI.GPT3.ObjectModels;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Text.Json;
 using Windows.ApplicationModel;
@@ -9,15 +11,34 @@ namespace wingman.Services
 {
     public enum WingmanSettings
     {
+        [Description("Current version of Wingman")]
         Version,
+        [Description("Your OpenAI API Key")]
         ApiKey,
+        [Description("Main Hotkey")]
         Main_Hotkey,
+        [Description("Modal Hotkey")]
         Modal_Hotkey,
+        [Description("Toggle: Trim Whitespaces from Response")]
         Trim_Whitespaces,
+        [Description("Toggle: Trim Newlines from Response")]
         Trim_Newlines,
+        [Description("Toggle: Append clipboard to main prompt.")]
         Append_Clipboard,
+        [Description("Toggle: Append clipboard to modal prompt.")]
         Append_Clipboard_Modal,
-        System_Preprompt
+        [Description("OpenAI System Pre-Prompt")]
+        System_Preprompt,
+        //[Description("OpenAI Model to Query")]
+        //OpenAI_Model
+    }
+
+    public enum WingmanSupportedCompletionModels
+    {
+        ChatGPT = Models.Model.ChatGpt3_5Turbo,
+        GPT4 = Models.Model.Gpt_4,
+        GPT4_32K = Models.Model.Gpt_4_32k,
+        Codex_Davinci = Models.Model.CodeDavinciV2,
     }
 
     public static class WingmanSettingsDefaults
@@ -30,6 +51,10 @@ namespace wingman.Services
         public const string Append_Clipboard = "false";
         public const string Append_Clipboard_Modal = "false";
         public const string System_Preprompt = "You are a programming assistant. You are only allowed to respond with the raw code. Do not generate explanations. Do not preface. Do not follow-up after the code.";
+
+        // Experiments
+        public const string Whisper_Preprompt = "The following transcription will be contextually based around programming, coding, or scripting.  It might include technical language and programming terminology.";
+
     }
 
 
@@ -158,6 +183,8 @@ namespace wingman.Services
                     _loggingService.LogWarning(String.Format("\"{0}\" set to \"{1}\"", Enum.GetName(setting), _settings[setting]));
                 }
             }
+
+            _settings[WingmanSettings.Version] = GetDefault(WingmanSettings.Version);
 
             if (shouldSave)
             {

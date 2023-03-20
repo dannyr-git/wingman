@@ -49,6 +49,65 @@ namespace wingman.Services
             return true;
         }
 
+        public async Task<string> GetChatCompletion(string prompt)
+        {
+            if (!await IsApiKeyValid())
+            {
+                Logger.LogError("OpenAI API Key is Invalid.");
+                return "Invalid API Key.  Please check your settings.";
+            }
+
+            Logger.LogDebug("Sending prompt to OpenAI API");
+            var completionResult = await _openAIService.ChatCompletion.CreateCompletion(new ChatCompletionCreateRequest
+            {
+                Messages = new List<ChatMessage>
+                {
+                    ChatMessage.FromSystem(settingsService.Load<string>(WingmanSettings.System_Preprompt)),
+                    ChatMessage.FromUser(prompt),
+                },
+                Model = Models.ChatGpt3_5Turbo,
+            });
+
+            if (completionResult.Successful)
+            {
+                Logger.LogDebug("OpenAI API Response Received");
+
+
+                var maid = completionResult.Choices.First().Message.Content;
+                var lines = maid.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+                var dbgstr = "Raw Prompt :\r\n";
+                foreach (var line in lines)
+                    dbgstr += ">>> " + line;
+                Logger.LogDebug(dbgstr);
+
+                maid = PromptCleaners.CleanBlockIdentifiers(maid);
+                if (settingsService.Load<bool>(WingmanSettings.Trim_Whitespaces))
+                    maid = PromptCleaners.TrimWhitespaces(maid);
+                if (settingsService.Load<bool>(WingmanSettings.Trim_Newlines))
+                    maid = PromptCleaners.TrimNewlines(maid);
+                return maid;
+            }
+            else
+            {
+                var result = completionResult.Error?.Message;
+
+                if (result != null && result.Contains("Incorrect API key provided"))
+                {
+                    Logger.LogError("You aren't using a valid OpenAI API Key.");
+                }
+                else
+                {
+                    Logger.LogError("OpenAI API Failed, Reason :");
+                    if (result == null)
+                        Logger.LogError("Result was null.");
+                    else
+                        Logger.LogError(result);
+                }
+
+                return String.Empty;
+            }
+        }
+
         public async Task<string> GetResponse(string prompt)
         {
             if (!await IsApiKeyValid())
@@ -66,7 +125,7 @@ namespace wingman.Services
                     ChatMessage.FromUser(prompt),
                 },
                 Model = Models.ChatGpt3_5Turbo,
-                MaxTokens = 2048,
+                //MaxTokens = 2048,
                 //Model = Models.CodeDavinciV2,
                 //MaxTokens = 8001
             });
@@ -163,7 +222,6 @@ namespace wingman.Services
             var fileBytes = await ReadFileBytes(inmp3);
 
             Logger.LogDebug("Sending audio to Whisper API");
-            var sult = new AudioCreateTranscriptionRequest;
             //sult.Prompt
             var completionResult = await _openAIService.Audio.CreateTranscription(new AudioCreateTranscriptionRequest
             {

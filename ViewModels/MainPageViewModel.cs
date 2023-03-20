@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.UI.Xaml;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using wingman.Interfaces;
 using wingman.Services;
+using wingman.Views;
 
 namespace wingman.ViewModels
 {
@@ -33,6 +35,15 @@ namespace wingman.ViewModels
             InitializeStdInTargetOptions();
             _settingsService = settingsService;
             PrePrompt = _settingsService.Load<string>(WingmanSettings.System_Preprompt);
+            OpenWindowCommand = new RelayCommand(OnOpenWindow);
+        }
+
+        public ICommand OpenWindowCommand { get; }
+        private void OnOpenWindow()
+        {
+            var window = new Window();
+            window.Content = new SettingsControl();
+            window.Activate();
         }
 
         public string PrePrompt
