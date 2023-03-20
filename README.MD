@@ -18,7 +18,7 @@ Code is either output to STDIN or a 'code block' modal
 4. Configure your hotkeys
 5. Hold down a hotkey, record your command, and let go! 
 
-`![Wingman Screenshot](Assets/wingman_screenshot.png)`
+![Wingman Screenshot](Assets/wingman_screenshot.png?raw=true "Screenshot")
 
 
 
