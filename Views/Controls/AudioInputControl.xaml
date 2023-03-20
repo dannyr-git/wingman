@@ -67,7 +67,6 @@
             Minimum="0"
             Value="{x:Bind ViewModel.ProgressBarValue, Mode=OneWay}" />
 
-
         <!--  Microphone Volume and Gain Sliders  -->
         <!--  TODO:  Not implemented functionality  -->
         <StackPanel

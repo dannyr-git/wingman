@@ -48,11 +48,6 @@
     <DebugType>full</DebugType>
   </PropertyGroup>
   <ItemGroup>
-    <None Remove="aggr.ps1" />
-    <None Remove="Views\Footer.xaml" />
-    <None Remove="Views\StatusWindow.xaml" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="wingman.ico" />
   </ItemGroup>
   <!--

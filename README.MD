@@ -12,44 +12,14 @@ Code is either output to STDIN or a 'code block' modal
 
 
 
-
-
-
 ## Deployment
 
-For the pre-release, an unpackaged self-constained EXE is available for download in the releases section.
+https://apps.microsoft.com/store/detail/wingman-ai-coding-assistant/9MTF697D6QN6?hl=en-us&gl=us&rtc=1
 
-Windows Store availability coming soon.
 
-There are some pre-requisites :
-
-### Requirement Windows App Runtime (>= 1.2.4)
-```
-You must have Windows App Runtime 1.2.4 or higher (Corresponds to SDK version 1.2.230217.4)
-
-x64 Link:  
-https://aka.ms/windowsappsdk/1.2/1.2.230217.4/windowsappruntimeinstall-x64.exe
-
-x86 Link:
-https://aka.ms/windowsappsdk/1.2/1.2.230217.4/windowsappruntimeinstall-x86.exe
-
-Main Link:
-https://docs.microsoft.com/en-us/windows/apps/windows-app-sdk/downloads#windows-app-sdk-10
-
-```
-
-### Requirement:  VCRedist 
-```
-https://aka.ms/vs/17/release/vc_redist.x86.exe
-
-https://aka.ms/vs/17/release/vc_redist.x64.exe
-
-https://learn.microsoft.com/en-US/cpp/windows/latest-supported-vc-redist?view=msvc-170
-
-```
 ## Demo
 
-https://youtu.be/lQaH3Y4pMxw
+https://youtu.be/xfoD-7Jg_fg
 
 
 ## Authors

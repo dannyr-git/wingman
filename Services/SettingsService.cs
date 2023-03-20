@@ -150,7 +150,11 @@ namespace wingman.Services
 
             foreach (WingmanSettings setting in Enum.GetValues(typeof(WingmanSettings)))
             {
-                if (!_settings.ContainsKey(setting))
+                if (setting == WingmanSettings.Version)
+                {
+                    _settings[setting] = GetDefault(setting);
+                }
+                else if (!_settings.ContainsKey(setting))
                 {
                     _loggingService.LogWarning(String.Format("Setting \"{0}\" missing from settings", Enum.GetName(setting)));
                     shouldSave = true;
