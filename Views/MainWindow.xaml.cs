@@ -23,7 +23,7 @@ namespace wingman.Views
     public sealed partial class MainWindow : Window
     {
         public IEventHandlerService eventsHandler;
-        private DispatcherQueue _dispatcherQueue;
+        private readonly DispatcherQueue _dispatcherQueue;
         private App _app;
 
         public MainWindow(IEventHandlerService eventsHandler)
@@ -40,11 +40,15 @@ namespace wingman.Views
             ViewModel = Ioc.Default.GetRequiredService<MainWindowViewModel>();
 
             this.SetWindowSize(800, 600);
-            this.SetIsResizable(false);
+            this.SetIsResizable(true);
 
             this.Closed += OnClosed;
 
             _app = null;
+
+
+            this.SetIcon("Assets/wingman.ico");
+
         }
 
         public void SetApp(App app)

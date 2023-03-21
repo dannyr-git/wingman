@@ -14,9 +14,9 @@ Code is either output to STDIN or a 'code block' modal
 
 1. Download the app from the Microsoft Store
 2. Create an OpenAI account and get an API key
-3. Configure your OpenAI API key
+3. Add/Paste your OpenAI API key
 4. Configure your hotkeys
-5. Hold down a hotkey, record your command, and let go! 
+5. Hold down a hotkey => Record your prompt => Let go of hotkey
 
 ![Wingman Screenshot](Assets/wingman_screenshot.png?raw=true "Screenshot")
 

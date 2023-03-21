@@ -12,7 +12,7 @@
         <helpers:BoolToApiKeyValidConverter x:Key="BoolToApiKeyValidConverter" />
     </UserControl.Resources>
 
-    <Grid>
+    <Grid Padding="5" HorizontalAlignment="Left">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="50" />
             <ColumnDefinition Width="*" MinWidth="350" />
@@ -37,26 +37,28 @@
             FontFamily="Segoe MDL2 Assets"
             IsHitTestVisible="False" />
 
-        <TextBox
+
+        <StackPanel
             Grid.Row="0"
             Grid.Column="1"
-            Grid.ColumnSpan="2"
-            Width="420"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Center"
-            CharacterSpacing="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
-            MaxLength="51"
-            Text="{Binding Api_Key, Mode=TwoWay}"
-            TextWrapping="NoWrap" />
+            Grid.ColumnSpan="3"
+            Orientation="Horizontal">
+            <TextBox
+                Width="420"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                CharacterSpacing="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
+                MaxLength="51"
+                Text="{Binding Api_Key, Mode=TwoWay}"
+                TextWrapping="NoWrap" />
 
-        <TextBlock
-            Grid.Column="2"
-            Grid.ColumnSpan="2"
-            Margin="60,0,0,0"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Center"
-            Text="{Binding ApiKeymessage}"
-            TextWrapping="Wrap" />
+            <TextBlock
+                Margin="10,0,0,0"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                Text="{Binding ApiKeymessage}"
+                TextWrapping="Wrap" />
+        </StackPanel>
 
         <Grid Grid.Row="2" Margin="10" />
 

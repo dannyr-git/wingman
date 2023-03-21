@@ -35,6 +35,20 @@ namespace wingman.Helpers
 
     public static class Extensions
     {
+        public static void SetIcon(this Window window, string iconpath)
+        {
+            AppWindow appWindow = window.GetAppWindow();
+            appWindow.SetIcon(iconpath);
+
+            if (appWindow.Presenter is OverlappedPresenter overlappedPresenter)
+            {
+
+
+            }
+        }
+
+
+
         public static void HideTitleBar(this Window window)
         {
             AppWindow appWindow = window.GetAppWindow();

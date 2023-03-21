@@ -6,6 +6,7 @@
 
     <Application.Resources>
         <ResourceDictionary>
+            <BitmapImage x:Key="AppIcon" UriSource="/Assets/wingman.png" />
             <GradientStopCollection x:Key="ProgressRingGradientStops">
                 <GradientStop Offset="0" Color="Green" />
                 <GradientStop Offset="0.5" Color="Yellow" />

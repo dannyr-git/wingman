@@ -12,7 +12,7 @@
         <Helpers:ProgressBarValueToColorConverter x:Key="ProgressBarValueToColorConverter" />
     </UserControl.Resources>
 
-    <Grid>
+    <Grid Padding="5" HorizontalAlignment="Left">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="50" />
             <ColumnDefinition Width="*" MinWidth="350" />
