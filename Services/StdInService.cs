@@ -28,8 +28,7 @@ namespace wingman.Services
         const uint WM_CHAR = 0x0102;
 
         private Process? _process;
-
-        ILoggingService Logger;
+        readonly ILoggingService Logger;
 
         public void SetProcess(Process process)
         {
@@ -45,8 +44,8 @@ namespace wingman.Services
         {
             InputInjector inputInjector = InputInjector.TryCreate();
             // Save whatever is on the clipboard
-            var savedClipboard = await ClipboardHelper.GetTextAsync();
-            await Task.Delay(100);
+            //var savedClipboard = await ClipboardHelper.GetTextAsync();
+            //await Task.Delay(100);
 
             Logger.LogDebug("Leveraging Clipboard to send string: " + str);
             await ClipboardHelper.SetTextAsync(str);
@@ -72,8 +71,9 @@ namespace wingman.Services
                 }
             });
 
-            await Task.Delay(100);
-            await ClipboardHelper.SetTextAsync(savedClipboard);
+            //
+            //await Task.Delay(100);
+            //await ClipboardHelper.SetTextAsync(savedClipboard);
         }
 
         // The new InputInjector class works 500x better than SendKeys; so we abandon NativeKeyboard here 
